@@ -10,13 +10,11 @@ const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   // ---------------- EFFECTS ----------------
-  // Load token from localStorage on mount
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     if (storedToken) setToken(true);
   }, []);
 
-  // Save/remove token in localStorage when it changes
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', 'true');
@@ -29,7 +27,7 @@ const Navbar = () => {
   const handleLogout = () => {
     setToken(false);
     setShowDropdown(false);
-    navigate('/login'); // Redirect to login page after logout
+    navigate('/login');
   };
 
   const handleProfileClick = () => {
@@ -43,7 +41,7 @@ const Navbar = () => {
   };
 
   const handleCreateAccount = () => {
-    setToken(true); // Temporary for demo; real app should set this after login/signup
+    setToken(true);
     navigate('/login');
   };
 
@@ -52,7 +50,7 @@ const Navbar = () => {
     <div className="flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400">
 
       {/* Logo */}
-      <img
+      <img onClickCapture={() => navigate('/')}
         className="w-44 cursor-pointer"
         src={assets.logo}
         alt="Logo"
@@ -61,16 +59,41 @@ const Navbar = () => {
 
       {/* Navigation Links */}
       <ul className="hidden md:flex items-start gap-5 font-medium">
-        <NavLink to="/" className="hover:underline">HOME</NavLink>
-        <NavLink to="/doctor" className="hover:underline">ALL DOCTOR</NavLink>
-        <NavLink to="/about" className="hover:underline">ABOUT</NavLink>
-        <NavLink to="/contact" className="hover:underline">CONTACT</NavLink>
+        <NavLink 
+          to="/" 
+          className={({ isActive }) => isActive ? "underline font-semibold" : "hover:underline"}
+        >
+          HOME
+        </NavLink>
+        <NavLink 
+          to="/doctor" 
+          className={({ isActive }) => isActive ? "underline font-semibold" : "hover:underline"}
+        >
+          ALL DOCTORS
+        </NavLink>
+        <NavLink 
+          to="/mypage"   // 👈 replace with your actual route (like /my or /dashboard)
+          className={({ isActive }) => isActive ? "underline font-semibold" : "hover:underline"}
+        >
+          MY PAGE
+        </NavLink>
+        <NavLink 
+          to="/about" 
+          className={({ isActive }) => isActive ? "underline font-semibold" : "hover:underline"}
+        >
+          ABOUT
+        </NavLink>
+        <NavLink 
+          to="/contact" 
+          className={({ isActive }) => isActive ? "underline font-semibold" : "hover:underline"}
+        >
+          CONTACT
+        </NavLink>
       </ul>
 
       {/* Right Side */}
       <div className="flex items-center gap-4">
         {token ? (
-          // Profile + Dropdown
           <div
             className="flex items-center gap-2 cursor-pointer group relative"
             onClick={() => setShowDropdown(!showDropdown)}
@@ -87,7 +110,6 @@ const Navbar = () => {
             )}
           </div>
         ) : (
-          // Create Account Button
           <button
             onClick={handleCreateAccount}
             className="bg-primary text-white px-8 py-3 rounded-full font-light hidden md:block"

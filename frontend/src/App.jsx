@@ -10,6 +10,7 @@ import Contact from './pages/Contact'
 import Myprofile from './pages/Myprofile'
 import Appointment from './pages/Appointment'
 import Navbar from './components/Navbar'
+import Footer from './components/Footer'
  // ✅ Make sure src/components/Navbar.jsx exists
 
 const App = () => {
@@ -27,6 +28,11 @@ const App = () => {
         <Route path="/myprofile" element={<Myprofile />} />
         <Route path="/appointment/:docId" element={<Appointment />} />
       </Routes>
+      <Footer/>
+      
+      <div className="text-center text-sm text-gray-500 mt-8 border-t border-gray-200 pt-4">
+        © 2025 Good Life Clinic. All rights reserved.
+      </div>
     </div>
   )
 }
