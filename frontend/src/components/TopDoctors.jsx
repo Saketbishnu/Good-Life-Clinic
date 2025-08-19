@@ -13,7 +13,7 @@ const TopDoctors = () => {
         {doctors.slice(0,1).map((item, index) => (
             <div 
               key={item._id} 
-              onClick={() => navigate(`/appointment/${item._id}`)} 
+              onClick={() => {navigate(`/appointment/${item._id}`); scrollTo(0,0)}} 
               className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500'
             >
                 <img className='bg-blue-50' src={item.image} alt={item.name}/>
@@ -28,7 +28,7 @@ const TopDoctors = () => {
             </div>
         ))}
       </div>
-      <button onClick={()=>{navigate('/doctors'); scrillTo(0,0) }}className='bg-blue-100 text-gray-600 px-12 py-3 rounded-full mt-10'>more</button>
+      <button onClick={()=>{navigate('/doctors'); scrillTo(0,0) }}className='bg-blue-500 text-white px-12 py-3 rounded-full mt-10'>more</button>
     </div>
   )
 }

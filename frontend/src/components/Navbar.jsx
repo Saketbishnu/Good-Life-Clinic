@@ -35,8 +35,8 @@ const Navbar = () => {
     setShowDropdown(false);
   };
 
-  const handleAppointmentsClick = () => {
-    navigate('/myappointments');
+  const handleAppointmentClick = () => {
+    navigate('/myappointment');
     setShowDropdown(false);
   };
 
@@ -99,7 +99,7 @@ const Navbar = () => {
             {showDropdown && (
               <div className="absolute top-10 right-0 min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4 text-gray-600 text-base font-medium shadow-lg z-50">
                 <p onClick={handleProfileClick} className="hover:text-black cursor-pointer">My Profile</p>
-                <p onClick={handleAppointmentsClick} className="hover:text-black cursor-pointer">My Appointment</p>
+                <p onClick={handleAppointmentClick} className="hover:text-black cursor-pointer">My Appointment</p>
                 <p onClick={handleLogout} className="hover:text-black cursor-pointer">Logout</p>
               </div>
             )}
