@@ -66,17 +66,12 @@ const Navbar = () => {
           HOME
         </NavLink>
         <NavLink 
-          to="/doctor" 
+          to="/doctors" 
           className={({ isActive }) => isActive ? "underline font-semibold" : "hover:underline"}
         >
           ALL DOCTORS
         </NavLink>
-        <NavLink 
-          to="/mypage"   // 👈 replace with your actual route (like /my or /dashboard)
-          className={({ isActive }) => isActive ? "underline font-semibold" : "hover:underline"}
-        >
-          MY PAGE
-        </NavLink>
+        
         <NavLink 
           to="/about" 
           className={({ isActive }) => isActive ? "underline font-semibold" : "hover:underline"}

@@ -8,7 +8,7 @@ const Footer = () => {
         
         {/* Left section */}
         <div>
-          <img src="/good-life.png" alt="logo" className="w-40 h-40" />
+          <img src="/good-life.jpg" alt="logo" className="w-45 h-40" />
           <p className="mt-4 text-sm text-gray-600">
             Good Life Clinic is dedicated to providing trusted healthcare
             services with expert doctors and modern facilities. Your health is our priority.
