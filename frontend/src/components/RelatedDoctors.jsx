@@ -34,7 +34,7 @@ const RelatedDoctors = ({ speciality, docId }) => {
             }}
             className='cursor-pointer border rounded-lg shadow-md hover:shadow-lg transition p-4'
           >
-            <img className="bg-blue-50 w-50 object-contain rounded-t-xl" src={item.image} alt={item.name} />
+            <img className="bg-blue-50 w-42 object-contain rounded-t-xl" src={item.image} alt={item.name} />
             <div className='p-4'>
               <div className='flex items-center gap-2 text-sm text-center'>
                 <p className='w-2 h-2 bg-green-500 rounded-full'></p>

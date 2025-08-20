@@ -81,14 +81,14 @@ const Appointment = () => {
         {/* --------- Doctor Image --------- */}
         <div>
           <img
-            className="bg-primary w-full sm:max-w-72 rounded-lg shadow-md"
+            className="bg-blue-50 w-45 object-contain rounded-t-xl"
             src={docInfo.image}
             alt={docInfo.name}
           />
         </div>
 
         {/* --------- Doctor Info --------- */}
-        <div className="flex-1 border border-gray-400 rounded-lg p-8 py-7 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0">
+        <div className="flex-1 border border-gray-400 rounded-lg p-8 py-20 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0">
           {/* Name + Verified Badge */}
           <p className="flex items-center gap-2 text-xl font-semibold text-gray-800">
             {docInfo.name}
@@ -118,7 +118,8 @@ const Appointment = () => {
 
       {/* ------- Booking slots ------- */}
       <div className="sm:ml-72 sm:pl-4 mt-4 font-medium text-gray-700">
-        <p>Booking slots</p>
+        <p className="mb-4 font-bold text-blue-500 text-lg animate-blink">Booking slots</p>
+
         <div className="flex gap-3 items-center w-full overflow-x-scroll mt-4">
           {docSlots.length && docSlots.map((item, index) => (
             <div
