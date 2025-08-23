@@ -34,16 +34,16 @@ const Doctors = () => {
   }, [doctors, selectedSpeciality]);
 
   return (
-    <div className="flex gap-6 p-4">
+    <div className="flex flex-col md:flex-row gap-6 p-4">
       {/* -------- LEFT SIDE FILTER -------- */}
-      <div className="w-1/4 border-r pr-4">
+      <div className="w-full md:w-1/4 border-r md:pr-4 mb-4 md:mb-0">
         <h2 className="text-xl font-semibold mb-4">Specialities</h2>
-        <ul className="space-y-3">
+        <ul className="grid grid-cols-2 sm:grid-cols-3 md:block gap-2 md:space-y-3">
           {specialities.map((spec) => (
             <li
               key={spec}
               onClick={() => setSelectedSpeciality(spec)}
-              className={`cursor-pointer p-2 rounded-lg border ${
+              className={`cursor-pointer p-2 rounded-lg border text-center md:text-left ${
                 selectedSpeciality === spec
                   ? "bg-blue-500 text-white border-blue-500"
                   : "hover:bg-blue-100 border-gray-300"
@@ -55,7 +55,7 @@ const Doctors = () => {
           {/* ✅ Show all doctors option */}
           <li
             onClick={() => setSelectedSpeciality("")}
-            className={`cursor-pointer p-2 rounded-lg border ${
+            className={`cursor-pointer p-2 rounded-lg border text-center md:text-left ${
               selectedSpeciality === ""
                 ? "bg-blue-500 text-white border-blue-500"
                 : "hover:bg-blue-100 border-gray-300"
@@ -67,12 +67,12 @@ const Doctors = () => {
       </div>
 
       {/* -------- RIGHT SIDE DOCTORS LIST -------- */}
-      <div className="w-3/4">
+      <div className="w-full md:w-3/4">
         <h1 className="text-2xl font-bold mb-4">
           {selectedSpeciality ? `${selectedSpeciality}s` : "All Doctors"}
         </h1>
 
-        <div className="grid grid-cols-auto gap-4 gap-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-6">
           {filterDoc.length > 0 ? (
             filterDoc.map((item) => (
               <div

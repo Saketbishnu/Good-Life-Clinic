@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { assets } from "../assets/assets";
 
 const Contact = () => {
-  // State to manage form inputs
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -11,13 +10,11 @@ const Contact = () => {
   const [status, setStatus] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Handle input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -34,7 +31,7 @@ const Contact = () => {
 
       if (response.ok) {
         setStatus("Message sent successfully!");
-        setFormData({ name: "", email: "", message: "" }); // Reset form
+        setFormData({ name: "", email: "", message: "" });
       } else {
         setStatus("Failed to send message. Please try again.");
       }
@@ -46,23 +43,25 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 px-6 sm:px-16 py-12 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 px-4 sm:px-8 md:px-16 py-10 flex flex-col items-center justify-center">
       {/* Header Section */}
-      <div className="text-center mb-12 animate-fade-in">
-        <h1 className="text-5xl font-extrabold text-gray-900 tracking-tight">
+      <div className="text-center mb-10 animate-fade-in px-2">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
           Connect With Us
         </h1>
-        <p className="text-lg text-gray-600 mt-3 max-w-2xl mx-auto">
+        <p className="text-base sm:text-lg text-gray-600 mt-3 max-w-xl md:max-w-2xl mx-auto">
           Your health is our priority. Reach out for appointments, inquiries, or medical support.
         </p>
       </div>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-7xl w-full">
         {/* Contact Form */}
-        <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl p-8 border border-gray-100/50 transition-transform duration-300 hover:scale-105">
-          <h2 className="text-3xl font-semibold text-gray-800 mb-6">Send Us a Message</h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white/80 backdrop-blur-lg rounded-2xl md:rounded-3xl shadow-xl p-6 sm:p-8 border border-gray-100/50 transition-transform duration-300 hover:scale-105">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">
+            Send Us a Message
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
             <div>
               <label htmlFor="name" className="block text-gray-700 font-medium mb-2">
                 Name
@@ -72,7 +71,7 @@ const Contact = () => {
                 id="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all"
+                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all text-sm sm:text-base"
                 placeholder="Your Name"
                 required
               />
@@ -86,7 +85,7 @@ const Contact = () => {
                 id="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all"
+                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all text-sm sm:text-base"
                 placeholder="Your Email"
                 required
               />
@@ -99,16 +98,16 @@ const Contact = () => {
                 id="message"
                 value={formData.message}
                 onChange={handleChange}
-                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all"
+                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all text-sm sm:text-base"
                 placeholder="Your Message"
-                rows="5"
+                rows="4"
                 required
               ></textarea>
             </div>
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full py-3 rounded-lg transition-all duration-300 shadow-md ${
+              className={`w-full py-3 rounded-lg transition-all duration-300 shadow-md text-sm sm:text-base ${
                 isSubmitting
                   ? "bg-teal-300 cursor-not-allowed"
                   : "bg-teal-500 hover:bg-teal-600 text-white"
@@ -118,7 +117,7 @@ const Contact = () => {
             </button>
             {status && (
               <p
-                className={`text-center mt-4 ${
+                className={`text-center mt-3 text-sm sm:text-base ${
                   status.includes("success") ? "text-green-600" : "text-red-600"
                 }`}
               >
@@ -129,11 +128,13 @@ const Contact = () => {
         </div>
 
         {/* Contact Info & Image */}
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           {/* Contact Info */}
-          <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl p-8 border border-gray-100/50 transition-transform duration-300 hover:scale-105">
-            <h2 className="text-3xl font-semibold text-gray-800 mb-6">Get in Touch</h2>
-            <div className="space-y-6">
+          <div className="bg-white/80 backdrop-blur-lg rounded-2xl md:rounded-3xl shadow-xl p-6 sm:p-8 border border-gray-100/50 transition-transform duration-300 hover:scale-105">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">
+              Get in Touch
+            </h2>
+            <div className="space-y-5 sm:space-y-6 text-sm sm:text-base">
               {/* Phone */}
               <div>
                 <p className="text-gray-600 font-medium flex items-center gap-2">
@@ -153,7 +154,7 @@ const Contact = () => {
                 </p>
                 <a
                   href="mailto:goodlifeclinickunjora@gmail.com"
-                  className="text-teal-600 hover:text-teal-700 transition-colors"
+                  className="text-teal-600 hover:text-teal-700 transition-colors break-words"
                 >
                   goodlifeclinickunjora@gmail.com
                 </a>
@@ -188,7 +189,7 @@ const Contact = () => {
             <img
               src={assets.contact_image}
               alt="Goodlife Clinic"
-              className="rounded-3xl shadow-lg w-full max-w-md object-cover transition-transform duration-300 hover:scale-105"
+              className="rounded-2xl md:rounded-3xl shadow-lg w-full max-w-sm sm:max-w-md object-cover transition-transform duration-300 hover:scale-105"
             />
           </div>
         </div>
