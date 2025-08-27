@@ -33,7 +33,7 @@ const Footer = () => {
 
         {/* Right section */}
         <div>
-          <p className="font-bold mb-4">DEVELOPER CONTACT(SAKET)</p>
+          <p className="font-bold mb-4">DEVELOPER CONTACT(SAKET BISHNU)</p>
           <div className="flex gap-4">
             <a href="#" className="text-gray-600 hover:text-blue-600">
               <FaInstagram size={20} />
