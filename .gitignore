@@ -1,9 +1,16 @@
-# Ignore node_modules
+# dependencies
 node_modules/
 
-# Ignore environment variables
+# environment files
 .env
 backend/.env
 
-# Ignore uploads
+# logs
+*.log
+
+# system files
+.DS_Store
+Thumbs.db
+
+# uploads
 backend/uploads/
