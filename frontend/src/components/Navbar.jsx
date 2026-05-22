@@ -1,32 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { assets } from "../assets/assets";
 import { NavLink, useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { token, setToken } = useContext(AppContext);
 
   // ---------------- STATE ----------------
-  const [token, setToken] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showMenu, setShowMenu] = useState(false); // ✅ Mobile Menu toggle
-
-  // ---------------- EFFECTS ----------------
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) setToken(true);
-  }, []);
-
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem("token", "true");
-    } else {
-      localStorage.removeItem("token");
-    }
-  }, [token]);
+  const [showMenu, setShowMenu] = useState(false);
 
   // ---------------- HANDLERS ----------------
   const handleLogout = () => {
-    setToken(false);
+    setToken("");
     setShowDropdown(false);
     navigate("/login");
   };
@@ -42,7 +29,6 @@ const Navbar = () => {
   };
 
   const handleCreateAccount = () => {
-    setToken(true);
     navigate("/login");
   };
 
@@ -125,7 +111,7 @@ const Navbar = () => {
               setShowMenu(false);
             }}
             className="w-28 cursor-pointer"
-            src={assets.logo} // 🔑 You can replace with assets.doctor_logo if you add one
+            src={assets.logo}
             alt="Doctor Logo"
           />
           {/* Close Button on Right */}

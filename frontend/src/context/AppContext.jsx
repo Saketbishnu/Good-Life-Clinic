@@ -1,22 +1,55 @@
-import { createContext } from "react";
-import { doctors } from "../assets/assets";
+import { createContext, useCallback, useEffect, useState } from "react";
+import api, { backendUrl } from "../config/api";
 
+export const AppContext = createContext();
 
-export const AppContext = createContext()
+const AppContextprovider = (props) => {
+  const currencySymbol = "\u20B9";
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [doctors, setDoctors] = useState([]);
 
-const AppContextprovider =(props) => {
-    const currencySymbol ='₹'
+  const getDoctorsData = useCallback(async () => {
+    try {
+      const { data } = await api.get("/api/doctor/list");
 
-
-
-    const value ={
-        doctors,currencySymbol
-
+      if (data.success) {
+        setDoctors(data.doctors || []);
+      } else {
+        setDoctors([]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch doctors:", error.message);
+      setDoctors([]);
     }
-    return(
-        <AppContext.Provider value={value}>
-            {props.children}
-            </AppContext.Provider>
-    )
-}
-export default AppContextprovider
+  }, []);
+
+  useEffect(() => {
+    getDoctorsData();
+  }, [getDoctorsData]);
+
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+    } else {
+      localStorage.removeItem("token");
+    }
+  }, [token]);
+
+  const value = {
+    api,
+    backendUrl,
+    currencySymbol,
+    doctors,
+    getDoctorsData,
+    token,
+    setToken,
+  };
+
+  return (
+    <AppContext.Provider value={value}>
+      {props.children}
+    </AppContext.Provider>
+  );
+};
+
+export default AppContextprovider;

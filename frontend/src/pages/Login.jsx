@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
 
 export default function SignupLogin() {
-  const [isLogin, setIsLogin] = useState(false); // toggle between login/signup
+  const navigate = useNavigate();
+  const { api, setToken } = useContext(AppContext);
+  const [isLogin, setIsLogin] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
+  const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -14,20 +20,29 @@ export default function SignupLogin() {
   };
 
   // Submit handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
+    setIsSubmitting(true);
 
-    if (isLogin) {
-      // ---- LOGIN ----
-      console.log("Login submitted:", {
-        email: formData.email,
-        password: formData.password,
-      });
-      // send POST -> /api/login
-    } else {
-      // ---- SIGNUP ----
-      console.log("Signup submitted:", formData);
-      // send POST -> /api/signup
+    try {
+      const endpoint = isLogin ? "/api/user/login" : "/api/user/register";
+      const payload = isLogin
+        ? { email: formData.email, password: formData.password }
+        : formData;
+
+      const { data } = await api.post(endpoint, payload);
+
+      if (data.success && data.token) {
+        setToken(data.token);
+        navigate("/");
+      } else {
+        setMessage(data.message || "Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -69,17 +84,23 @@ export default function SignupLogin() {
 
           <button
             type="submit"
+            disabled={isSubmitting}
             className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
           >
-            {isLogin ? "Login" : "Signup"}
+            {isSubmitting ? "Please wait..." : isLogin ? "Login" : "Signup"}
           </button>
         </form>
+
+        {message && <p className="mt-4 text-sm text-red-600">{message}</p>}
 
         {/* Toggle Button */}
         <p className="mt-4 text-gray-600">
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
           <button
-            onClick={() => setIsLogin(!isLogin)}
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setMessage("");
+            }}
             className="text-indigo-600 font-semibold hover:underline"
           >
             {isLogin ? "Signup" : "Login"}

@@ -40,6 +40,44 @@ const validateAuthInput = ({ name, email, password }, requireName = false) => {
     return null
 }
 
+const validateProfileInput = ({ name, phone, address, gender, dob, image }) => {
+    if (name !== undefined && (!name.trim() || name.trim().length > 80)) {
+        return 'Name must be between 1 and 80 characters'
+    }
+
+    if (phone !== undefined && (typeof phone !== 'string' || !/^[0-9+\-\s()]{7,20}$/.test(phone))) {
+        return 'Please enter a valid phone number'
+    }
+
+    if (address !== undefined) {
+        if (typeof address !== 'object' || address === null || Array.isArray(address)) {
+            return 'Address must be an object'
+        }
+
+        if (address.line1 !== undefined && (typeof address.line1 !== 'string' || address.line1.length > 120)) {
+            return 'Address line 1 is invalid'
+        }
+
+        if (address.line2 !== undefined && (typeof address.line2 !== 'string' || address.line2.length > 120)) {
+            return 'Address line 2 is invalid'
+        }
+    }
+
+    if (gender !== undefined && !['Male', 'Female', 'Other', 'Not Selected'].includes(gender)) {
+        return 'Invalid gender'
+    }
+
+    if (dob !== undefined && dob !== 'Not Selected' && !validator.isISO8601(dob)) {
+        return 'Invalid date of birth'
+    }
+
+    if (image !== undefined && image !== '' && !validator.isURL(image, { require_protocol: true })) {
+        return 'Image must be a valid URL'
+    }
+
+    return null
+}
+
 const registerUser = async (req, res) => {
     try {
         const name = req.body.name?.trim()
@@ -118,4 +156,66 @@ const loginUser = async (req, res) => {
     }
 }
 
-export { registerUser, loginUser }
+const getUserProfile = async (req, res) => {
+    try {
+        const user = await userModel.findById(req.userId)
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' })
+        }
+
+        res.status(200).json({
+            success: true,
+            user: sanitizeUser(user)
+        })
+    } catch (error) {
+        console.error('Error in getUserProfile:', error.message)
+        res.status(500).json({ success: false, message: 'Failed to fetch profile' })
+    }
+}
+
+const updateUserProfile = async (req, res) => {
+    try {
+        const { name, phone, address, gender, dob, image } = req.body
+        const validationError = validateProfileInput({ name, phone, address, gender, dob, image })
+
+        if (validationError) {
+            return res.status(400).json({ success: false, message: validationError })
+        }
+
+        const updates = {}
+
+        if (name !== undefined) updates.name = name.trim()
+        if (phone !== undefined) updates.phone = phone.trim()
+        if (address !== undefined) {
+            updates.address = {
+                line1: address.line1?.trim() || '',
+                line2: address.line2?.trim() || ''
+            }
+        }
+        if (gender !== undefined) updates.gender = gender
+        if (dob !== undefined) updates.dob = dob
+        if (image !== undefined) updates.image = image
+
+        const user = await userModel.findByIdAndUpdate(
+            req.userId,
+            { $set: updates },
+            { new: true, runValidators: true }
+        )
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Profile updated successfully',
+            user: sanitizeUser(user)
+        })
+    } catch (error) {
+        console.error('Error in updateUserProfile:', error.message)
+        res.status(500).json({ success: false, message: 'Failed to update profile' })
+    }
+}
+
+export { registerUser, loginUser, getUserProfile, updateUserProfile }
