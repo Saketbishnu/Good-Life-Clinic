@@ -3,6 +3,9 @@ import bcrypt from 'bcrypt'
 import {v2 as cloudinary} from "cloudinary"
 import doctorModel from "../models/doctorModel.js"
 import jwt from 'jsonwebtoken'
+import appointmentModel from "../models/appointmentModel.js"
+import userModel from "../models/userModel.js"
+import mongoose from "mongoose"
 
 //API for adding Doctor
 const addDoctor = async (req,res) =>{
@@ -94,4 +97,91 @@ const loginAdmin = async (req,res) => {
     }
 }
 
-export { addDoctor ,loginAdmin };
+const allDoctors = async (req, res) => {
+    try {
+        const doctors = await doctorModel.find({}).select('-password').sort({ date: -1 })
+
+        res.status(200).json({ success: true, doctors })
+    } catch (error) {
+        console.error("Error in allDoctors:", error.message)
+        res.status(500).json({ success: false, message: "Failed to fetch doctors" })
+    }
+}
+
+const changeDoctorAvailability = async (req, res) => {
+    try {
+        const { doctorId } = req.body
+
+        if (!doctorId) {
+            return res.status(400).json({ success: false, message: "Doctor ID is required" })
+        }
+
+        if (!mongoose.isValidObjectId(doctorId)) {
+            return res.status(400).json({ success: false, message: "Invalid doctor ID" })
+        }
+
+        const doctor = await doctorModel.findById(doctorId)
+
+        if (!doctor) {
+            return res.status(404).json({ success: false, message: "Doctor not found" })
+        }
+
+        doctor.available = !doctor.available
+        await doctor.save()
+
+        res.status(200).json({
+            success: true,
+            message: "Doctor availability updated",
+            doctor: {
+                _id: doctor._id,
+                name: doctor.name,
+                available: doctor.available
+            }
+        })
+    } catch (error) {
+        console.error("Error in changeDoctorAvailability:", error.message)
+        res.status(500).json({ success: false, message: "Failed to update doctor availability" })
+    }
+}
+
+const appointmentsAdmin = async (req, res) => {
+    try {
+        const appointments = await appointmentModel.find({}).sort({ date: -1 })
+
+        res.status(200).json({ success: true, appointments })
+    } catch (error) {
+        console.error("Error in appointmentsAdmin:", error.message)
+        res.status(500).json({ success: false, message: "Failed to fetch appointments" })
+    }
+}
+
+const adminDashboard = async (req, res) => {
+    try {
+        const [doctors, users, appointments, cancelledAppointments, completedAppointments] = await Promise.all([
+            doctorModel.countDocuments({}),
+            userModel.countDocuments({}),
+            appointmentModel.countDocuments({}),
+            appointmentModel.countDocuments({ cancelled: true }),
+            appointmentModel.countDocuments({ isCompleted: true })
+        ])
+
+        const latestAppointments = await appointmentModel.find({}).sort({ date: -1 }).limit(5)
+
+        res.status(200).json({
+            success: true,
+            dashboardData: {
+                doctors,
+                users,
+                appointments,
+                cancelledAppointments,
+                completedAppointments,
+                latestAppointments
+            }
+        })
+    } catch (error) {
+        console.error("Error in adminDashboard:", error.message)
+        res.status(500).json({ success: false, message: "Failed to fetch dashboard data" })
+    }
+}
+
+export { addDoctor, loginAdmin, allDoctors, changeDoctorAvailability, appointmentsAdmin, adminDashboard };
