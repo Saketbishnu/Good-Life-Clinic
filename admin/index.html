@@ -1,26 +1,221 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>admin</title>
-  </head>
-  <body>
-    <marquee class="marq" bgcolor="blue-50" direction="left" loop="">
-  <div class="geek1">
-    Developer:Saket Bishnu
-  </div>
-  <div class="geek2">
-    Software Engineer
-  </div>
-</marquee>
+    <link rel="icon" type="image/png" href="/logo.png" />
 
-    
-   <div class="main">
-        
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Good Life Clinic Admin</title>
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #020617;
+        color: white;
+        overflow-x: hidden;
+        font-family: "Poppins", sans-serif;
+      }
+
+      /* Animated futuristic background */
+      body::before {
+        content: "";
+        position: fixed;
+        width: 200%;
+        height: 200%;
+        background:
+          radial-gradient(circle at center, rgba(59,130,246,0.15), transparent 30%),
+          radial-gradient(circle at 30% 30%, rgba(0,255,255,0.12), transparent 25%),
+          radial-gradient(circle at 70% 70%, rgba(168,85,247,0.12), transparent 25%);
+        animation: moveBg 18s linear infinite;
+        z-index: -2;
+      }
+
+      @keyframes moveBg {
+        0% {
+          transform: translate(-10%, -10%) rotate(0deg);
+        }
+        100% {
+          transform: translate(-10%, -10%) rotate(360deg);
+        }
+      }
+
+      /* Grid overlay */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+        background-size: 40px 40px;
+        z-index: -1;
+      }
+
+      /* Futuristic top bar */
+      .marq-container {
+        width: 100%;
+        background: rgba(15, 23, 42, 0.8);
+        border-bottom: 1px solid rgba(59,130,246,0.4);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 20px rgba(59,130,246,0.3);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .marq {
+        display: flex;
+        gap: 80px;
+        white-space: nowrap;
+        padding: 14px 0;
+        animation: marquee 18s linear infinite;
+        font-family: "Orbitron", sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        color: #38bdf8;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      @keyframes marquee {
+        0% {
+          transform: translateX(100%);
+        }
+        100% {
+          transform: translateX(-100%);
+        }
+      }
+
+      .marq span {
+        text-shadow: 0 0 10px #38bdf8;
+      }
+
+      /* Glow effect behind root */
+      #root {
+        position: relative;
+        z-index: 2;
+      }
+
+      .main {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+          circle at center,
+          rgba(56, 189, 248, 0.12),
+          transparent 60%
+        );
+        z-index: -1;
+      }
+
+      /* Floating particles */
+      .particles {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        z-index: -1;
+      }
+
+      .particles span {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: #38bdf8;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #38bdf8;
+        animation: float 12s linear infinite;
+      }
+
+      .particles span:nth-child(1) {
+        left: 10%;
+        animation-duration: 8s;
+        top: 100%;
+      }
+
+      .particles span:nth-child(2) {
+        left: 25%;
+        animation-duration: 12s;
+        top: 100%;
+      }
+
+      .particles span:nth-child(3) {
+        left: 40%;
+        animation-duration: 10s;
+        top: 100%;
+      }
+
+      .particles span:nth-child(4) {
+        left: 60%;
+        animation-duration: 14s;
+        top: 100%;
+      }
+
+      .particles span:nth-child(5) {
+        left: 75%;
+        animation-duration: 9s;
+        top: 100%;
+      }
+
+      .particles span:nth-child(6) {
+        left: 90%;
+        animation-duration: 13s;
+        top: 100%;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0) scale(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        100% {
+          transform: translateY(-120vh) scale(0.5);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Futuristic Animated Top Banner -->
+    <div class="marq-container">
+      <div class="marq">
+        <span>🚀 Developer : Saket Bishnu</span>
+        <span>⚡ Software Engineer</span>
+        <span>🧠 AI Powered Clinic Management System</span>
+        <span>💙 Good Life Clinic Admin Panel</span>
+      </div>
     </div>
+
+    <!-- Animated Background -->
+    <div class="main"></div>
+
+    <!-- Floating particles -->
+    <div class="particles">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <!-- React App -->
     <div id="root"></div>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

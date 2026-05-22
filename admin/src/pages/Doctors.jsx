@@ -28,6 +28,28 @@ const Doctors = () => {
     }
   }
 
+  const deleteDoctor = async (doctorId, doctorName) => {
+    const shouldDelete = window.confirm(`Delete ${doctorName}? This cannot be undone.`)
+
+    if (!shouldDelete) {
+      return
+    }
+
+    try {
+      setMessage('')
+      const { data } = await api.post('/api/admin/delete-doctor', { doctorId })
+
+      if (data.success) {
+        setMessage(data.message || 'Doctor deleted successfully')
+        await loadDoctors()
+      } else {
+        setMessage(data.message || 'Failed to delete doctor')
+      }
+    } catch (error) {
+      setMessage(error.response?.data?.message || 'Failed to delete doctor')
+    }
+  }
+
   useEffect(() => {
     loadDoctors()
   }, [loadDoctors])
@@ -51,6 +73,12 @@ const Doctors = () => {
                 />
                 Available
               </label>
+              <button
+                onClick={() => deleteDoctor(doctor._id, doctor.name)}
+                className="text-sm text-red-600 border border-red-200 px-3 py-1 rounded hover:bg-red-50"
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}

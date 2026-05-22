@@ -144,6 +144,49 @@ const changeDoctorAvailability = async (req, res) => {
     }
 }
 
+const deleteDoctor = async (req, res) => {
+    try {
+        const { doctorId } = req.body
+
+        if (!doctorId) {
+            return res.status(400).json({ success: false, message: "Doctor ID is required" })
+        }
+
+        if (!mongoose.isValidObjectId(doctorId)) {
+            return res.status(400).json({ success: false, message: "Invalid doctor ID" })
+        }
+
+        const doctor = await doctorModel.findById(doctorId)
+
+        if (!doctor) {
+            return res.status(404).json({ success: false, message: "Doctor not found" })
+        }
+
+        const activeAppointment = await appointmentModel.exists({
+            doctorId,
+            cancelled: false,
+            isCompleted: false
+        })
+
+        if (activeAppointment) {
+            return res.status(409).json({
+                success: false,
+                message: "Cannot delete doctor with active appointments"
+            })
+        }
+
+        await doctorModel.findByIdAndDelete(doctorId)
+
+        res.status(200).json({
+            success: true,
+            message: "Doctor deleted successfully"
+        })
+    } catch (error) {
+        console.error("Error in deleteDoctor:", error.message)
+        res.status(500).json({ success: false, message: "Failed to delete doctor" })
+    }
+}
+
 const appointmentsAdmin = async (req, res) => {
     try {
         const appointments = await appointmentModel.find({}).sort({ date: -1 })
@@ -184,4 +227,4 @@ const adminDashboard = async (req, res) => {
     }
 }
 
-export { addDoctor, loginAdmin, allDoctors, changeDoctorAvailability, appointmentsAdmin, adminDashboard };
+export { addDoctor, loginAdmin, allDoctors, changeDoctorAvailability, deleteDoctor, appointmentsAdmin, adminDashboard };
