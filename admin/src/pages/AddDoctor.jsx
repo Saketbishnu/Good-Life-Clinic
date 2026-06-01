@@ -66,17 +66,17 @@ const AddDoctor = () => {
       <form onSubmit={handleSubmit} className="bg-white border rounded-lg p-5 max-w-4xl space-y-4">
         <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} className="block" required />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input name="name" value={form.name} onChange={handleChange} placeholder="Doctor name" className="border px-3 py-2 rounded" required />
-          <input name="email" value={form.email} onChange={handleChange} placeholder="Doctor email" className="border px-3 py-2 rounded" required />
-          <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" className="border px-3 py-2 rounded" required />
-          <input name="speciality" value={form.speciality} onChange={handleChange} placeholder="Speciality" className="border px-3 py-2 rounded" required />
-          <input name="degree" value={form.degree} onChange={handleChange} placeholder="Degree" className="border px-3 py-2 rounded" required />
-          <input name="experience" value={form.experience} onChange={handleChange} placeholder="Experience" className="border px-3 py-2 rounded" required />
-          <input name="fees" type="number" value={form.fees} onChange={handleChange} placeholder="Fees" className="border px-3 py-2 rounded" required />
-          <input name="line1" value={form.line1} onChange={handleChange} placeholder="Address line 1" className="border px-3 py-2 rounded" required />
-          <input name="line2" value={form.line2} onChange={handleChange} placeholder="Address line 2" className="border px-3 py-2 rounded" required />
+          <input name="name" value={form.name} onChange={handleChange} placeholder="Doctor name" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
+          <input name="email" value={form.email} onChange={handleChange} placeholder="Doctor email" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
+          <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
+          <input name="speciality" value={form.speciality} onChange={handleChange} placeholder="Speciality" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
+          <input name="degree" value={form.degree} onChange={handleChange} placeholder="Degree" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
+          <input name="experience" value={form.experience} onChange={handleChange} placeholder="Experience" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
+          <input name="fees" type="number" value={form.fees} onChange={handleChange} placeholder="Fees" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
+          <input name="line1" value={form.line1} onChange={handleChange} placeholder="Address line 1" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
+          <input name="line2" value={form.line2} onChange={handleChange} placeholder="Address line 2" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
         </div>
-        <textarea name="about" value={form.about} onChange={handleChange} placeholder="About doctor" className="border px-3 py-2 rounded w-full min-h-28" required />
+        <textarea name="about" value={form.about} onChange={handleChange} placeholder="About doctor" className="border px-3 py-2 rounded w-full min-h-28 text-gray-900 placeholder:text-gray-400 bg-white" required />
         <button disabled={isSubmitting} className="bg-primary text-white px-6 py-2 rounded">
           {isSubmitting ? 'Adding...' : 'Add Doctor'}
         </button>

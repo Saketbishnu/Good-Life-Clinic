@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input,
+textarea,
+select {
+  @apply text-gray-900 placeholder:text-gray-400;
+}

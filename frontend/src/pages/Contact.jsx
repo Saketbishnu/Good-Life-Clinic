@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { assets } from "../assets/assets";
+import { AppContext } from "../context/AppContext";
 
 const Contact = () => {
+  const { api } = useContext(AppContext);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,22 +23,16 @@ const Contact = () => {
     setStatus("");
 
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const { data } = await api.post("/api/contact", formData);
 
-      if (response.ok) {
-        setStatus("Message sent successfully!");
+      if (data.success) {
+        setStatus(data.message || "Message sent successfully!");
         setFormData({ name: "", email: "", message: "" });
       } else {
-        setStatus("Failed to send message. Please try again.");
+        setStatus(data.message || "Failed to send message. Please try again.");
       }
     } catch (error) {
-      setStatus("An error occurred. Please try again later.");
+      setStatus(error.response?.data?.message || "An error occurred. Please try again later.");
     } finally {
       setIsSubmitting(false);
     }
@@ -71,7 +67,7 @@ const Contact = () => {
                 id="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all text-sm sm:text-base"
+                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all text-sm sm:text-base"
                 placeholder="Your Name"
                 required
               />
@@ -85,7 +81,7 @@ const Contact = () => {
                 id="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all text-sm sm:text-base"
+                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all text-sm sm:text-base"
                 placeholder="Your Email"
                 required
               />
@@ -98,7 +94,7 @@ const Contact = () => {
                 id="message"
                 value={formData.message}
                 onChange={handleChange}
-                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all text-sm sm:text-base"
+                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all text-sm sm:text-base"
                 placeholder="Your Message"
                 rows="4"
                 required
