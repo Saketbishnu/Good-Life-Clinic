@@ -8,6 +8,8 @@ import Dashboard from './pages/Dashboard'
 import Doctors from './pages/Doctors'
 import AddDoctor from './pages/AddDoctor'
 import Appointments from './pages/Appointments'
+import DoctorLogin from './pages/DoctorLogin'
+import DoctorDashboard from './pages/DoctorDashboard'
 
 const ProtectedLayout = ({ children }) => {
   const { adminToken } = useContext(AdminContext)
@@ -35,6 +37,8 @@ const App = () => {
   return (
     <Routes>
       <Route path="/login" element={adminToken ? <Navigate to="/" replace /> : <Login />} />
+      <Route path="/doctor-login" element={<DoctorLogin />} />
+      <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
       <Route path="/" element={<ProtectedLayout><Dashboard /></ProtectedLayout>} />
       <Route path="/doctors" element={<ProtectedLayout><Doctors /></ProtectedLayout>} />
       <Route path="/add-doctor" element={<ProtectedLayout><AddDoctor /></ProtectedLayout>} />
