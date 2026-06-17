@@ -3,6 +3,8 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import doctorModel from '../models/doctorModel.js'
 import appointmentModel from '../models/appointmentModel.js'
+import userModel from '../models/userModel.js'
+import { DEFAULT_PROFILE_IMAGE } from '../constants/defaults.js'
 
 const publicDoctorFields = '-password'
 const TOKEN_EXPIRY = '7d'
@@ -113,10 +115,39 @@ const doctorAppointments = async (req, res) => {
         const appointments = await appointmentModel
             .find({ doctorId: req.doctorId })
             .sort({ date: -1 })
+            .lean()
+
+        const userIds = [...new Set(appointments.map((appointment) => String(appointment.userId)))]
+        const users = await userModel
+            .find({ _id: { $in: userIds } })
+            .select('name email phone gender image')
+            .lean()
+
+        const usersById = new Map(users.map((user) => [String(user._id), user]))
+        const appointmentsWithLatestUserData = appointments.map((appointment) => {
+            const latestUser = usersById.get(String(appointment.userId))
+
+            if (!latestUser) {
+                return appointment
+            }
+
+            return {
+                ...appointment,
+                userData: {
+                    ...appointment.userData,
+                    _id: latestUser._id,
+                    name: latestUser.name,
+                    email: latestUser.email,
+                    phone: latestUser.phone,
+                    gender: latestUser.gender,
+                    image: latestUser.image || DEFAULT_PROFILE_IMAGE
+                }
+            }
+        })
 
         res.status(200).json({
             success: true,
-            appointments
+            appointments: appointmentsWithLatestUserData
         })
     } catch (error) {
         console.error('Error in doctorAppointments:', error.message)

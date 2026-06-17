@@ -57,7 +57,7 @@ const Appointment = () => {
         currentDate.setHours(currentDate.getHours() > 8 ? currentDate.getHours() + 1 : 8);
         currentDate.setMinutes(currentDate.getMinutes() > 30 ? 0 : 30);
       } else {
-        currentDate.setHours(8);
+        currentDate.setHours(9);
         currentDate.setMinutes(0);
       }
       currentDate.setSeconds(0, 0);
