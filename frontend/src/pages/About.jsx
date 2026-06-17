@@ -61,7 +61,7 @@ const About = () => {
         </p>
       </div>
       {/* Extra Images Section */}
-      <h2 className="text-xl md:text-2xl text-center font-semibold text-gray-800 mb-4">Our Equipment</h2>
+      <h2 className="text-xl md:text-2xl text-center font-semibold text-white mb-4">Our Equipment</h2>
 <div className="my-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
   
   {equipmentImages.map((image, index) => (
