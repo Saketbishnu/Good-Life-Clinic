@@ -11,6 +11,11 @@ const DoctorLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if (isSubmitting) {
+      return
+    }
+
     setMessage('')
     setIsSubmitting(true)
 
@@ -18,6 +23,7 @@ const DoctorLogin = () => {
       const { data } = await api.post('/api/doctor/login', { email, password })
 
       if (data.success && data.token) {
+        setMessage('')
         localStorage.setItem('doctorToken', data.token)
         navigate('/doctor-dashboard')
       } else {
