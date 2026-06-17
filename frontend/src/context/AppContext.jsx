@@ -35,6 +35,16 @@ const AppContextprovider = (props) => {
     }
   }, [token]);
 
+  useEffect(() => {
+    const handleTokenCleared = () => setToken("");
+
+    window.addEventListener("auth-token-cleared", handleTokenCleared);
+
+    return () => {
+      window.removeEventListener("auth-token-cleared", handleTokenCleared);
+    };
+  }, []);
+
   const value = {
     api,
     backendUrl,
