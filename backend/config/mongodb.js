@@ -4,13 +4,20 @@ const connectDB = async () => {
     const mongoUri = process.env.MONGODB_URI;
 
     if (!mongoUri) {
-        throw new Error("MONGODB_URI is missing. Add it to your backend environment before starting the server.");
+        throw new Error(
+            "MONGODB_URI is missing. Add it to your backend environment before starting the server."
+        );
     }
 
-    mongoose.connection.on('connected', () => console.log("MongoDB connected to GOOD-LIFE-CLINIC"));
-    mongoose.connection.on('error', (error) => console.error("MongoDB connection error:", error.message));
+    mongoose.connection.on('connected', () =>
+        console.log("MongoDB connected to GOOD-LIFE-CLINIC")
+    );
 
-    await mongoose.connect(`${mongoUri}/GOOD-LIFE-CLINIC`);
-}
+    mongoose.connection.on('error', (error) =>
+        console.error("MongoDB connection error:", error.message)
+    );
 
-export default connectDB
+    await mongoose.connect(mongoUri);
+};
+
+export default connectDB;

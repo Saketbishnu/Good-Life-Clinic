@@ -34,7 +34,7 @@ const Doctors = () => {
   }, [doctors, selectedSpeciality]);
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 p-4">
+    <div className="flex flex-col md:flex-row gap-6 p-2 sm:p-4 overflow-hidden">
       {/* -------- LEFT SIDE FILTER -------- */}
       <div className="w-full md:w-1/4 border-r md:pr-4 mb-4 md:mb-0">
         <h2 className="text-xl font-semibold mb-4">Specialities</h2>
@@ -43,7 +43,7 @@ const Doctors = () => {
             <li
               key={spec}
               onClick={() => setSelectedSpeciality(spec)}
-              className={`cursor-pointer p-2 rounded-lg border text-center md:text-left ${
+              className={`cursor-pointer p-2 rounded-lg border text-center md:text-left text-sm sm:text-base break-words ${
                 selectedSpeciality === spec
                   ? "bg-blue-500 text-white border-blue-500"
                   : "hover:bg-blue-100 border-gray-300"
@@ -55,7 +55,7 @@ const Doctors = () => {
           {/* ✅ Show all doctors option */}
           <li
             onClick={() => setSelectedSpeciality("")}
-            className={`cursor-pointer p-2 rounded-lg border text-center md:text-left ${
+            className={`cursor-pointer p-2 rounded-lg border text-center md:text-left text-sm sm:text-base ${
               selectedSpeciality === ""
                 ? "bg-blue-500 text-white border-blue-500"
                 : "hover:bg-blue-100 border-gray-300"

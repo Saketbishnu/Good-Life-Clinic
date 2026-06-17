@@ -47,8 +47,8 @@ export default function SignupLogin() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-indigo-200">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md text-center">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-indigo-200 px-2">
+      <div className="bg-white shadow-lg rounded-2xl p-6 sm:p-8 w-full max-w-md text-center">
         <h2 className="text-2xl font-bold text-indigo-700 mb-6">
           {isLogin ? "Login" : "Signup"}
         </h2>

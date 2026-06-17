@@ -8,7 +8,7 @@ const Footer = () => {
         
         {/* Left section */}
         <div>
-          <img src="/good-life.jpg" alt="logo" className="w-45 h-40" />
+          <img src="/good-life.jpeg" alt="logo" className="w-40 h-40 max-w-full object-contain" />
           <p className="mt-4 text-sm text-gray-600">
             Good Life Clinic is dedicated to providing trusted healthcare
             services with expert doctors and modern facilities. Your health is our priority.
@@ -33,7 +33,7 @@ const Footer = () => {
 
         {/* Right section */}
         <div>
-          <p className="font-bold mb-4">DEVELOPER CONTACT(SAKET BISHNU)</p>
+          <p className="font-bold mb-4 break-words">DEVELOPER CONTACT(SAKET BISHNU)</p>
           <div className="flex gap-4">
             <a href="#" className="text-gray-600 hover:text-blue-600">
               <FaInstagram size={20} />

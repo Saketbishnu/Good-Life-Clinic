@@ -53,7 +53,7 @@ const Contact = () => {
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-7xl w-full">
         {/* Contact Form */}
-        <div className="bg-white/80 backdrop-blur-lg rounded-2xl md:rounded-3xl shadow-xl p-6 sm:p-8 border border-gray-100/50 transition-transform duration-300 hover:scale-105">
+        <div className="bg-white/80 backdrop-blur-lg rounded-2xl md:rounded-3xl shadow-xl p-6 sm:p-8 border border-gray-100/50 transition-transform duration-300 md:hover:scale-105">
           <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">
             Send Us a Message
           </h2>
@@ -126,7 +126,7 @@ const Contact = () => {
         {/* Contact Info & Image */}
         <div className="space-y-6 sm:space-y-8">
           {/* Contact Info */}
-          <div className="bg-white/80 backdrop-blur-lg rounded-2xl md:rounded-3xl shadow-xl p-6 sm:p-8 border border-gray-100/50 transition-transform duration-300 hover:scale-105">
+          <div className="bg-white/80 backdrop-blur-lg rounded-2xl md:rounded-3xl shadow-xl p-6 sm:p-8 border border-gray-100/50 transition-transform duration-300 md:hover:scale-105">
             <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">
               Get in Touch
             </h2>
@@ -175,7 +175,7 @@ const Contact = () => {
                 <p className="text-gray-600 font-medium flex items-center gap-2">
                   <span className="text-teal-500">⏰</span> Opening Hours
                 </p>
-                <p className="text-gray-700">8:00 AM – 5:00 PM</p>
+                <p className="text-gray-700">9:00 AM – 7:00 PM</p>
               </div>
             </div>
           </div>
@@ -185,7 +185,7 @@ const Contact = () => {
             <img
               src={assets.contact_image}
               alt="Goodlife Clinic"
-              className="rounded-2xl md:rounded-3xl shadow-lg w-full max-w-sm sm:max-w-md object-cover transition-transform duration-300 hover:scale-105"
+              className="rounded-2xl md:rounded-3xl shadow-lg w-full max-w-sm sm:max-w-md object-cover transition-transform duration-300 md:hover:scale-105"
             />
           </div>
         </div>

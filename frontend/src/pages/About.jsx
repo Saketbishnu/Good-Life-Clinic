@@ -2,6 +2,8 @@ import React from 'react'
 import { assets } from '../assets/assets'
 
 const About = () => {
+  const equipmentImages = [assets.about1, assets.about2, assets.about3].filter(Boolean)
+
   return (
     <div className="px-6 md:px-16 lg:px-28 py-12 text-gray-800">
       
@@ -62,21 +64,14 @@ const About = () => {
       <h2 className="text-xl md:text-2xl text-center font-semibold text-gray-800 mb-4">Our Equipment</h2>
 <div className="my-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
   
-  <img 
-    src={assets.about1} 
-    alt="Clinic service 1" 
-    className="w-full rounded-lg shadow-md hover:scale-105 transition-transform"
-  />
-  <img 
-    src={assets.about2} 
-    alt="Clinic service 2" 
-    className="w-full rounded-lg shadow-md hover:scale-105 transition-transform"
-  />
-  <img 
-    src={assets.about3} 
-    alt="Clinic service 3" 
-    className="w-full rounded-lg shadow-md hover:scale-105 transition-transform"
-  />
+  {equipmentImages.map((image, index) => (
+    <img
+      key={index}
+      src={image}
+      alt={`Clinic service ${index + 1}`}
+      className="w-full rounded-lg shadow-md md:hover:scale-105 transition-transform"
+    />
+  ))}
 </div>
     </div>
   )

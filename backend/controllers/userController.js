@@ -1,9 +1,13 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import validator from 'validator'
+import { v2 as cloudinary } from 'cloudinary'
 import userModel from '../models/userModel.js'
+import { DEFAULT_PROFILE_IMAGE } from '../constants/defaults.js'
 
 const TOKEN_EXPIRY = '7d'
+const allowedProfileImageTypes = new Set(['image/jpeg', 'image/png', 'image/webp'])
+const MAX_PROFILE_IMAGE_DATA_LENGTH = 7 * 1024 * 1024
 
 const createToken = (userId) => {
     if (!process.env.JWT_SECRET) {
@@ -17,12 +21,22 @@ const sanitizeUser = (user) => ({
     _id: user._id,
     name: user.name,
     email: user.email,
-    image: user.image,
+    image: user.image || DEFAULT_PROFILE_IMAGE,
     address: user.address,
     gender: user.gender,
     dob: user.dob,
     phone: user.phone
 })
+
+const isProfileImageDataUrl = (image) => {
+    if (typeof image !== 'string' || image.length > MAX_PROFILE_IMAGE_DATA_LENGTH) {
+        return false
+    }
+
+    const match = image.match(/^data:(image\/(?:jpeg|png|webp));base64,/)
+
+    return Boolean(match && allowedProfileImageTypes.has(match[1]))
+}
 
 const validateAuthInput = ({ name, email, password }, requireName = false) => {
     if (requireName && (!name || !name.trim())) {
@@ -71,11 +85,33 @@ const validateProfileInput = ({ name, phone, address, gender, dob, image }) => {
         return 'Invalid date of birth'
     }
 
-    if (image !== undefined && image !== '' && !validator.isURL(image, { require_protocol: true })) {
+    if (
+        image !== undefined &&
+        image !== '' &&
+        !validator.isURL(image, { require_protocol: true }) &&
+        !isProfileImageDataUrl(image)
+    ) {
         return 'Image must be a valid URL'
     }
 
     return null
+}
+
+const uploadProfileImage = async (image) => {
+    if (!image || image === DEFAULT_PROFILE_IMAGE) {
+        return DEFAULT_PROFILE_IMAGE
+    }
+
+    if (isProfileImageDataUrl(image)) {
+        const uploadResult = await cloudinary.uploader.upload(image, {
+            resource_type: 'image',
+            folder: 'good-life-clinic/users'
+        })
+
+        return uploadResult.secure_url
+    }
+
+    return image
 }
 
 const registerUser = async (req, res) => {
@@ -100,7 +136,8 @@ const registerUser = async (req, res) => {
         const newUser = new userModel({
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            image: DEFAULT_PROFILE_IMAGE
         })
 
         const savedUser = await newUser.save()
@@ -195,7 +232,7 @@ const updateUserProfile = async (req, res) => {
         }
         if (gender !== undefined) updates.gender = gender
         if (dob !== undefined) updates.dob = dob
-        if (image !== undefined) updates.image = image
+        if (image !== undefined) updates.image = await uploadProfileImage(image)
 
         const user = await userModel.findByIdAndUpdate(
             req.userId,

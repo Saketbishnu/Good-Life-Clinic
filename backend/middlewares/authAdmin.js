@@ -13,11 +13,15 @@ const authAdmin = async (req, res, next) => {
         // 3. Extract ONLY the token part from the header string
         const token = authHeader.split(' ')[1];
 
+        if (!process.env.JWT_SECRET) {
+            return res.status(500).json({ success: false, message: 'JWT_SECRET is not configured' });
+        }
+
         // 4. Verify the token using your secret key
         const token_decode = jwt.verify(token, process.env.JWT_SECRET);
 
-        // 5. Check if the decoded payload matches the expected string from your login function
-        if (token_decode !== process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD) {
+        // 5. Check if the decoded payload matches the admin role and configured admin email
+        if (token_decode?.role !== 'admin' || token_decode?.email !== process.env.ADMIN_EMAIL) {
             return res.status(401).json({ success: false, message: 'Not Authorized, token is invalid' });
         }
 

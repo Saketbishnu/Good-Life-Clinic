@@ -133,20 +133,20 @@ const Appointment = () => {
   }, [getAvailableSlots]);
 
   return docInfo && (
-    <div className="p-6">
+    <div className="p-3 sm:p-6 overflow-hidden">
       {/* ----------- Doctor Details ------------- */}
       <div className="flex flex-col sm:flex-row gap-6 items-start">
         {/* --------- Doctor Image --------- */}
-        <div>
+        <div className="w-full sm:w-auto flex justify-center">
           <img
-            className="bg-blue-50 w-45 object-contain rounded-t-xl"
+            className="bg-blue-50 w-full max-w-52 sm:max-w-60 object-contain rounded-t-xl"
             src={docInfo.image}
             alt={docInfo.name}
           />
         </div>
 
         {/* --------- Doctor Info --------- */}
-        <div className="flex-1 border border-gray-400 rounded-lg p-8 py-20 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0">
+        <div className="flex-1 w-full border border-gray-400 rounded-lg p-5 sm:p-8 py-8 sm:py-20 bg-white mx-0 sm:mx-0 mt-0">
           {/* Name + Verified Badge */}
           <p className="flex items-center gap-2 text-xl font-semibold text-gray-800">
             {docInfo.name}
@@ -154,7 +154,7 @@ const Appointment = () => {
           </p>
 
           {/* Degree + Speciality + Experience */}
-          <div className="mt-3 flex items-center gap-3">
+          <div className="mt-3 flex flex-col sm:flex-row sm:items-center gap-3">
             <p className="text-gray-600">{docInfo.degree} - {docInfo.speciality}</p>
             <button className="bg-blue-100 text-blue-700 px-3 py-1 rounded-md text-sm font-medium">
               {docInfo.experience}
@@ -208,7 +208,7 @@ const Appointment = () => {
         <button
           onClick={bookAppointment}
           disabled={isBooking}
-          className="bg-primary text-white text-sm font-light px-14 py-3 rounded-full my-6"
+          className="bg-primary text-white text-sm font-light px-8 sm:px-14 py-3 rounded-full my-6 w-full sm:w-auto"
         >
           {isBooking ? 'Booking...' : 'Book an appointment'}
         </button>

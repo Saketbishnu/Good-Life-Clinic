@@ -71,9 +71,9 @@ const MyAppointment = () => {
           const doctor = item.doctorData || {}
 
           return (
-          <div className='grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:flex sm:gap-6 border-b' key={item._id || index}>
-            <div>
-              <img className='w-32 bg-indigo-50' src={doctor.image} alt={doctor.name || 'Doctor'} />
+          <div className='grid grid-cols-1 gap-4 sm:flex sm:gap-6 border-b py-4' key={item._id || index}>
+            <div className="flex justify-center sm:block">
+              <img className='w-24 sm:w-32 bg-indigo-50' src={doctor.image} alt={doctor.name || 'Doctor'} />
             </div>
             <div className='flex-1 text-sm text-zinc-600'>
               <p>{doctor.name}</p>
@@ -86,9 +86,9 @@ const MyAppointment = () => {
               </p>
               {item.cancelled && <p className="text-red-500">Cancelled</p>}
             </div>
-         <div className="flex flex-col gap-2 justify-end">
+         <div className="flex flex-col gap-2 justify-end sm:min-w-44">
   <button
-    className="bg-green-500 text-white px-2 py-2 text-sm font-medium rounded-md shadow-sm 
+    className="bg-green-500 text-white px-2 py-2 text-sm font-medium rounded-md shadow-sm w-full sm:w-auto
                hover:bg-blue-600 transition duration-300"
   >
     Pay Online
@@ -96,7 +96,7 @@ const MyAppointment = () => {
   <button
     onClick={() => cancelAppointment(item._id)}
     disabled={item.cancelled || item.isCompleted}
-    className="bg-white-500 text-black px-3 py-2 text-sm font-medium rounded-md shadow-sm 
+    className="bg-white-500 text-black px-3 py-2 text-sm font-medium rounded-md shadow-sm w-full sm:w-auto
                hover:bg-red-600 transition duration-300"
   >
     {item.cancelled ? 'Cancelled' : 'Cancel Appointment'}

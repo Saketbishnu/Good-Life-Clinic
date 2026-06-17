@@ -17,7 +17,7 @@ const Banner = () => {
         </p>
         <button onClick={() => {navigate('/login'); scrollTo(0,0)}}
           className="mt-4 bg-white text-sm sm:text-base text-gray-700 px-6 py-2 rounded-full shadow-md 
-          hover:bg-blue-600 hover:text-white hover:scale-105 
+          hover:bg-blue-600 hover:text-white md:hover:scale-105 
           transition-all duration-300 ease-in-out"
         >
           Create Account
@@ -29,7 +29,7 @@ const Banner = () => {
         <img 
           src={assets.appointment_img} 
           alt="appointment_img" 
-          className="w-72 md:w-96 object-contain"
+          className="w-full max-w-72 md:max-w-96 object-contain"
         />
       </div>
     </div>

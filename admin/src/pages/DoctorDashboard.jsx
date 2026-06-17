@@ -4,6 +4,7 @@ import api from '../config/api'
 
 const DoctorDashboard = () => {
   const navigate = useNavigate()
+  const [doctorProfile, setDoctorProfile] = useState(null)
   const [appointments, setAppointments] = useState([])
   const [message, setMessage] = useState('')
   const [isLoading, setIsLoading] = useState(true)
@@ -15,7 +16,7 @@ const DoctorDashboard = () => {
     navigate('/doctor-login')
   }
 
-  const getAppointments = useCallback(async () => {
+  const getDashboardData = useCallback(async () => {
     if (!doctorToken) {
       setIsLoading(false)
       navigate('/doctor-login')
@@ -24,16 +25,28 @@ const DoctorDashboard = () => {
 
     try {
       setIsLoading(true)
-      const { data } = await api.get('/api/doctor/appointments', {
+      const authConfig = {
         headers: {
           Authorization: `Bearer ${doctorToken}`
         }
-      })
+      }
 
-      if (data.success) {
-        setAppointments(data.appointments || [])
+      const [profileResponse, appointmentsResponse] = await Promise.all([
+        api.get('/api/doctor/profile', authConfig),
+        api.get('/api/doctor/appointments', authConfig)
+      ])
+
+      const profileData = profileResponse.data
+      const appointmentsData = appointmentsResponse.data
+
+      if (profileData.success) {
+        setDoctorProfile(profileData.doctor)
+      }
+
+      if (appointmentsData.success) {
+        setAppointments(appointmentsData.appointments || [])
       } else {
-        setMessage(data.message || 'Failed to load appointments')
+        setMessage(appointmentsData.message || 'Failed to load appointments')
       }
     } catch (error) {
       if (error.response?.status === 401) {
@@ -49,8 +62,8 @@ const DoctorDashboard = () => {
   }, [doctorToken, navigate])
 
   useEffect(() => {
-    getAppointments()
-  }, [getAppointments])
+    getDashboardData()
+  }, [getDashboardData])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -65,6 +78,23 @@ const DoctorDashboard = () => {
       </div>
 
       <div className="p-6">
+        {doctorProfile && (
+          <div className="bg-white border rounded-lg p-5 mb-6 flex flex-col sm:flex-row gap-4 items-start">
+            <img
+              src={doctorProfile.image}
+              alt={doctorProfile.name}
+              className="w-28 h-28 object-contain bg-blue-50 rounded"
+            />
+            <div className="text-sm text-gray-700 space-y-1">
+              <p className="text-xl font-semibold text-gray-800">{doctorProfile.name}</p>
+              <p>{doctorProfile.speciality}</p>
+              <p>{doctorProfile.degree}</p>
+              <p>{doctorProfile.experience}</p>
+              <p>{doctorProfile.email}</p>
+            </div>
+          </div>
+        )}
+
         <h1 className="text-2xl font-semibold mb-5">My Appointments</h1>
         {message && <p className="text-sm text-red-500 mb-4">{message}</p>}
 

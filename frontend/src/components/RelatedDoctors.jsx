@@ -19,8 +19,8 @@ const RelatedDoctors = ({ speciality, docId }) => {
 
   return (
     <div className='flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10'>
-      <h1 className='text-3xl font-medium'>Top Doctors to Book</h1>
-      <p className='sm:w-1/3 text-center text-sm'>
+      <h1 className='text-2xl sm:text-3xl font-medium text-center'>Top Doctors to Book</h1>
+      <p className='sm:w-1/3 text-center text-sm px-2 sm:px-0'>
         Simply browse through our extensive list of trusted doctors.
       </p>
 
@@ -34,7 +34,7 @@ const RelatedDoctors = ({ speciality, docId }) => {
             }}
             className='cursor-pointer border rounded-lg shadow-md hover:shadow-lg transition p-4'
           >
-            <img className="bg-blue-50 w-42 object-contain rounded-t-xl" src={item.image} alt={item.name} />
+            <img className="bg-blue-50 w-full h-48 object-contain rounded-t-xl" src={item.image} alt={item.name} />
             <div className='p-4'>
               <div className='flex items-center gap-2 text-sm text-center'>
                 <p className='w-2 h-2 bg-green-500 rounded-full'></p>

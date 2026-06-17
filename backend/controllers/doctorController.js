@@ -124,4 +124,22 @@ const doctorAppointments = async (req, res) => {
     }
 }
 
-export { listDoctors, getDoctorById, loginDoctor, doctorAppointments }
+const doctorProfile = async (req, res) => {
+    try {
+        const doctor = await doctorModel.findById(req.doctorId).select(publicDoctorFields)
+
+        if (!doctor) {
+            return res.status(404).json({ success: false, message: 'Doctor not found' })
+        }
+
+        res.status(200).json({
+            success: true,
+            doctor: sanitizeDoctor(doctor)
+        })
+    } catch (error) {
+        console.error('Error in doctorProfile:', error.message)
+        res.status(500).json({ success: false, message: 'Failed to fetch doctor profile' })
+    }
+}
+
+export { listDoctors, getDoctorById, loginDoctor, doctorAppointments, doctorProfile }

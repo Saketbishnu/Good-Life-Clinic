@@ -18,11 +18,14 @@ const normalizeUserData = (user) => ({
 
 const Myprofile = () => {
   const navigate = useNavigate()
-  const { api, token } = useContext(AppContext)
+  const { api, token, setUserData: setContextUserData } = useContext(AppContext)
   const [userData, setUserData] = useState(normalizeUserData())
+  const [selectedImageData, setSelectedImageData] = useState('')
   const [isEdit, setIsEdit] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [message, setMessage] = useState('')
+  const profileContainerStyle = { maxWidth: "600px", width: "100%", boxSizing: "border-box", margin: "20px auto", padding: "20px", border: "1px solid #ccc", borderRadius: "10px" }
+  const inputStyle = { width: "100%", maxWidth: "100%", boxSizing: "border-box" }
 
   const getUserProfile = useCallback(async () => {
     if (!token) {
@@ -63,14 +66,17 @@ const Myprofile = () => {
         dob: userData.dob
       }
 
-      if (userData.image && !userData.image.startsWith('data:')) {
-        payload.image = userData.image === assets.profile_pic ? '' : userData.image
+      if (selectedImageData) {
+        payload.image = selectedImageData
       }
 
       const { data } = await api.put('/api/user/update-profile', payload)
 
       if (data.success) {
-        setUserData(normalizeUserData(data.user))
+        const normalizedUser = normalizeUserData(data.user)
+        setUserData(normalizedUser)
+        setContextUserData(normalizedUser)
+        setSelectedImageData('')
         setIsEdit(false)
         setMessage('')
       } else {
@@ -87,6 +93,7 @@ const Myprofile = () => {
     if (file) {
       const reader = new FileReader()
       reader.onloadend = () => {
+        setSelectedImageData(reader.result)
         setUserData((prev) => ({ ...prev, image: reader.result }))
       }
       reader.readAsDataURL(file)
@@ -95,14 +102,14 @@ const Myprofile = () => {
 
   if (isLoading) {
     return (
-      <div style={{ maxWidth: "600px", margin: "20px auto", padding: "20px", border: "1px solid #ccc", borderRadius: "10px" }}>
+      <div style={profileContainerStyle}>
         <p>Loading profile...</p>
       </div>
     )
   }
 
   return (
-    <div style={{ maxWidth: "600px", margin: "20px auto", padding: "20px", border: "1px solid #ccc", borderRadius: "10px" }}>
+    <div style={profileContainerStyle}>
       {/* Profile Image */}
       <div style={{ textAlign: "center" }}>
         <img
@@ -112,7 +119,7 @@ const Myprofile = () => {
         />
         {isEdit && (
           <div>
-            <input type="file" accept="image/*" onChange={handleImageChange} />
+            <input type="file" accept="image/*" onChange={handleImageChange} style={{ maxWidth: "100%" }} />
           </div>
         )}
       </div>
@@ -124,6 +131,7 @@ const Myprofile = () => {
             type="text"
             value={userData.name}
             onChange={(e) => setUserData(prev => ({ ...prev, name: e.target.value }))}
+            style={inputStyle}
           />
         ) : (
           <h2>{userData.name}</h2>
@@ -143,6 +151,7 @@ const Myprofile = () => {
             type="text"
             value={userData.phone}
             onChange={(e) => setUserData(prev => ({ ...prev, phone: e.target.value }))}
+            style={inputStyle}
           />
         ) : (
           <p>{userData.phone}</p>
@@ -157,6 +166,7 @@ const Myprofile = () => {
               onChange={(e) => setUserData(prev => ({
                 ...prev, address: { ...prev.address, line1: e.target.value }
               }))}
+              style={inputStyle}
             /><br />
             <input
               type="text"
@@ -164,6 +174,7 @@ const Myprofile = () => {
               onChange={(e) => setUserData(prev => ({
                 ...prev, address: { ...prev.address, line2: e.target.value }
               }))}
+              style={inputStyle}
             />
           </div>
         ) : (
@@ -181,7 +192,7 @@ const Myprofile = () => {
           <select
             value={userData.gender}
             onChange={(e) => setUserData(prev => ({ ...prev, gender: e.target.value }))}
-            style={{ padding: "5px", borderRadius: "5px", border: "1px solid #ccc" }}
+            style={{ ...inputStyle, padding: "5px", borderRadius: "5px", border: "1px solid #ccc" }}
           >
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -197,7 +208,7 @@ const Myprofile = () => {
             type="date"
             value={userData.dob === 'Not Selected' ? '' : userData.dob}
             onChange={(e) => setUserData(prev => ({ ...prev, dob: e.target.value || 'Not Selected' }))}
-            style={{ padding: "5px", borderRadius: "5px", border: "1px solid #ccc" }}
+            style={{ ...inputStyle, padding: "5px", borderRadius: "5px", border: "1px solid #ccc" }}
           />
         ) : (
           <p>{userData.dob}</p>

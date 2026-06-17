@@ -1,12 +1,19 @@
 import { createContext, useCallback, useEffect, useState } from "react";
 import api, { backendUrl } from "../config/api";
+import { assets } from "../assets/assets";
 
 export const AppContext = createContext();
+
+const normalizeUserData = (user) => ({
+  ...user,
+  image: user?.image || assets.profile_pic,
+});
 
 const AppContextprovider = (props) => {
   const currencySymbol = "\u20B9";
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [doctors, setDoctors] = useState([]);
+  const [userData, setUserData] = useState(null);
 
   const getDoctorsData = useCallback(async () => {
     try {
@@ -26,6 +33,31 @@ const AppContextprovider = (props) => {
   useEffect(() => {
     getDoctorsData();
   }, [getDoctorsData]);
+
+  const getUserProfile = useCallback(async () => {
+    if (!token) {
+      setUserData(null);
+      return null;
+    }
+
+    const { data } = await api.get("/api/user/profile");
+
+    if (data.success) {
+      const normalizedUser = normalizeUserData(data.user);
+      setUserData(normalizedUser);
+      return normalizedUser;
+    }
+
+    setUserData(null);
+    return null;
+  }, [token]);
+
+  useEffect(() => {
+    getUserProfile().catch((error) => {
+      console.error("Failed to fetch user profile:", error.message);
+      setUserData(null);
+    });
+  }, [getUserProfile]);
 
   useEffect(() => {
     if (token) {
@@ -51,8 +83,11 @@ const AppContextprovider = (props) => {
     currencySymbol,
     doctors,
     getDoctorsData,
+    getUserProfile,
     token,
     setToken,
+    userData,
+    setUserData,
   };
 
   return (

@@ -5,7 +5,7 @@ import { AppContext } from "../context/AppContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { token, setToken } = useContext(AppContext);
+  const { token, setToken, userData } = useContext(AppContext);
 
   // ---------------- STATE ----------------
   const [showDropdown, setShowDropdown] = useState(false);
@@ -36,13 +36,18 @@ const Navbar = () => {
   return (
     <div className="flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400">
       {/* Logo */}
-      <img
-        onClickCapture={() => navigate("/")}
-        className="w-44 cursor-pointer"
-        src={assets.logo}
-        alt="Logo"
+      <button
+        type="button"
         onClick={() => navigate("/")}
-      />
+        className="w-14 h-14 md:w-24 md:h-24 rounded-full overflow-hidden bg-white flex items-center justify-center cursor-pointer flex-shrink-0"
+        aria-label="Go to home"
+      >
+        <img
+          className="w-full h-full object-cover"
+          src={assets.logo}
+          alt="Logo"
+        />
+      </button>
 
       {/* Navigation Links (Desktop) */}
       <ul className="hidden md:flex items-start gap-5 font-medium">
@@ -64,7 +69,7 @@ const Navbar = () => {
       <div className="flex items-center gap-4">
         {token ? (
           <div className="flex items-center gap-2 cursor-pointer group relative" onClick={() => setShowDropdown(!showDropdown)}>
-            <img className="w-8 rounded-full" src={assets.profile_pic} alt="Profile" />
+            <img className="w-8 h-8 rounded-full object-cover" src={userData?.image || assets.profile_pic} alt="Profile" />
             <img className="w-2.5" src={assets.dropdown_icon} alt="Dropdown Icon" />
 
             {showDropdown && (
@@ -105,15 +110,21 @@ const Navbar = () => {
         {/* Top Section with Logo + Close Button */}
         <div className="flex items-center justify-between">
           {/* Doctor Logo on Left */}
-          <img
+          <button
+            type="button"
             onClick={() => {
               navigate("/");
               setShowMenu(false);
             }}
-            className="w-28 cursor-pointer"
-            src={assets.logo}
-            alt="Doctor Logo"
-          />
+            className="w-14 h-14 rounded-full overflow-hidden bg-white flex items-center justify-center cursor-pointer flex-shrink-0"
+            aria-label="Go to home"
+          >
+            <img
+              className="w-full h-full object-cover"
+              src={assets.logo}
+              alt="Doctor Logo"
+            />
+          </button>
           {/* Close Button on Right */}
           <img onClick={() => setShowMenu(false)} className="w-6 cursor-pointer" src={assets.cross_icon} alt="close" />
         </div>

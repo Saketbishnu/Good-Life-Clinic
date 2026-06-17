@@ -2,12 +2,13 @@ import mongoose from 'mongoose'
 import appointmentModel from '../models/appointmentModel.js'
 import doctorModel from '../models/doctorModel.js'
 import userModel from '../models/userModel.js'
+import { DEFAULT_PROFILE_IMAGE } from '../constants/defaults.js'
 
 const sanitizeUserData = (user) => ({
     _id: user._id,
     name: user.name,
     email: user.email,
-    image: user.image,
+    image: user.image || DEFAULT_PROFILE_IMAGE,
     address: user.address,
     gender: user.gender,
     dob: user.dob,

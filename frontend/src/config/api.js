@@ -1,6 +1,10 @@
 import axios from "axios";
 
-export const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
+export const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+if (!backendUrl) {
+  throw new Error("VITE_BACKEND_URL is missing. Add it to the frontend environment.");
+}
 
 const api = axios.create({
   baseURL: backendUrl,

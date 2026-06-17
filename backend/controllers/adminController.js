@@ -7,6 +7,8 @@ import appointmentModel from "../models/appointmentModel.js"
 import userModel from "../models/userModel.js"
 import mongoose from "mongoose"
 
+const ADMIN_TOKEN_EXPIRY = '7d'
+
 //API for adding Doctor
 const addDoctor = async (req,res) =>{
     try {
@@ -80,8 +82,11 @@ const loginAdmin = async (req,res) => {
 
         const {email,password} =req.body
         if (email ==process.env.ADMIN_EMAIL && password ==process.env.ADMIN_PASSWORD) {
+            if (!process.env.JWT_SECRET) {
+                return res.status(500).json({ success: false, message: "JWT_SECRET is not configured" })
+            }
 
-            const token =jwt.sign(email+password,process.env.JWT_SECRET)
+            const token =jwt.sign({ email, role: 'admin' }, process.env.JWT_SECRET, { expiresIn: ADMIN_TOKEN_EXPIRY })
             res.json({success:true,token})
             
         } else{
