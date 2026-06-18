@@ -96,7 +96,7 @@ const Navbar = () => {
         )}
 
         {/* Mobile Menu Icon */}
-        <img onClick={() => setShowMenu(true)} className="w-6 md:hidden cursor-pointer" src={assets.menu_icon} alt="menu" />
+        <img onClick={() => setShowMenu(true)} className="w-6 md:hidden bg-white cursor-pointer" src={assets.menu_icon} alt="menu" />
       </div>
 
       {/* ---------------- MOBILE MENU + OVERLAY ---------------- */}
@@ -130,17 +130,17 @@ const Navbar = () => {
         </div>
 
         {/* Menu Links */}
-        <ul className="flex flex-col gap-6 mt-8 text-lg font-medium">
-          <NavLink to="/" onClick={() => setShowMenu(false)} className={({ isActive }) => (isActive ? "underline font-semibold" : "hover:underline")}>
+        <ul className="flex flex-col gap-6 mt-8 text-lg font-medium text-gray-800">
+          <NavLink to="/" onClick={() => setShowMenu(false)} className={({ isActive }) => (isActive ? "text-primary underline font-semibold" : "text-gray-800 hover:text-primary hover:underline")}>
             HOME
           </NavLink>
-          <NavLink to="/doctors" onClick={() => setShowMenu(false)} className={({ isActive }) => (isActive ? "underline font-semibold" : "hover:underline")}>
+          <NavLink to="/doctors" onClick={() => setShowMenu(false)} className={({ isActive }) => (isActive ? "text-primary underline font-semibold" : "text-gray-800 hover:text-primary hover:underline")}>
             ALL DOCTORS
           </NavLink>
-          <NavLink to="/about" onClick={() => setShowMenu(false)} className={({ isActive }) => (isActive ? "underline font-semibold" : "hover:underline")}>
+          <NavLink to="/about" onClick={() => setShowMenu(false)} className={({ isActive }) => (isActive ? "text-primary underline font-semibold" : "text-gray-800 hover:text-primary hover:underline")}>
             ABOUT
           </NavLink>
-          <NavLink to="/contact" onClick={() => setShowMenu(false)} className={({ isActive }) => (isActive ? "underline font-semibold" : "hover:underline")}>
+          <NavLink to="/contact" onClick={() => setShowMenu(false)} className={({ isActive }) => (isActive ? "text-primary underline font-semibold" : "text-gray-800 hover:text-primary hover:underline")}>
             CONTACT
           </NavLink>
 
@@ -150,7 +150,7 @@ const Navbar = () => {
                 handleCreateAccount();
                 setShowMenu(false);
               }}
-              className="bg-primary text-white px-6 py-3 rounded-full font-light"
+              className="bg-primary text-white px-6 py-3 rounded-full font-light hover:bg-blue-600"
             >
               Create Account
             </button>
