@@ -6,7 +6,7 @@ const TopDoctors = () => {
   const navigate = useNavigate()
   const {doctors} = useContext(AppContext)
   return (
-    <div className='flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10'>
+    <div className='flex flex-col items-center gap-4 my-16 text-white-900 md:mx-10'>
       <h1 className='text-2xl sm:text-3xl font-medium text-center'>Top Doctors to Book</h1>
       <p className='sm:w-1/2 text-center text-sm'>Find your Trusted Doctor</p>
       <div className='w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 px-3 sm:px-0'>
@@ -22,8 +22,8 @@ const TopDoctors = () => {
                     <div className='flex items-center gap-2 text-sm text-center text-green-500 animate-blink'>
                         <p className='w-2 h-2 bg-green-500 rounded-full'></p><p>Available</p>
                     </div>
-                    <p className='text-gray-900 text-lg font-medium'>{item.name} </p>
-                    <p className='text-gray-600 text-sm'>{item.speciality}</p>
+                    <p className='text-white-900 text-lg font-medium'>{item.name} </p>
+                    <p className='text-white-600 text-sm'>{item.speciality}</p>
                 </div>
             </div>
         ))}
