@@ -19,7 +19,7 @@ const Footer = () => {
         <div>
           <p className="font-bold mb-4">CONTACT</p>
           <p className="flex items-center gap-2">
-            📞 +91 98765 43210
+            📞 +91 77390 97511
           </p>
           <div className="flex gap-4 mt-3">
             <a href="#" className="text-gray-600 hover:text-blue-600">
