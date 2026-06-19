@@ -14,6 +14,13 @@ const createEmailTransporter = () => {
 
     const secure = EMAIL_SECURE === undefined ? port === 465 : EMAIL_SECURE.toLowerCase() === 'true'
 
+    console.log('SMTP CONFIG', {
+  host: EMAIL_HOST,
+  port,
+  secure,
+  user: EMAIL_USER
+})
+
     return nodemailer.createTransport({
         host: EMAIL_HOST,
         port,
