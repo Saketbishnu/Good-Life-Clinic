@@ -1,6 +1,6 @@
 import validator from 'validator'
 import contactModel from '../models/contactModel.js'
-import createEmailTransporter, { verifyEmailTransporter } from '../config/email.js'
+import createEmailTransporter from '../config/email.js'
 
 const validateContactInput = ({ name, email, message }) => {
     if (!name || typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 80) {
@@ -38,9 +38,7 @@ const sendContactMessage = async (req, res) => {
             }
 
             const transporter = createEmailTransporter()
-            if (!await verifyEmailTransporter(transporter)) {
-                throw new Error('SMTP verification failed')
-            }
+            console.log('Attempting email send...')
 
             await transporter.sendMail({
                 from: `"Good Life Clinic Contact" <${process.env.EMAIL_USER}>`,
@@ -59,11 +57,11 @@ const sendContactMessage = async (req, res) => {
 
             contactMessage.emailSent = true
             await contactMessage.save()
-            console.log(`Email sent for contact message ${contactMessage._id}`)
+            console.log('Email sent successfully')
         } catch (emailError) {
             contactMessage.emailSent = false
             await contactMessage.save()
-            console.error(`Email send failed for contact message ${contactMessage._id}:`, emailError.message)
+            console.error('Email send failed:', emailError.message)
         }
 
         res.status(200).json({
