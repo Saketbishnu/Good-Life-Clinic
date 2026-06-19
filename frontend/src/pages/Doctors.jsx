@@ -13,7 +13,7 @@ const Doctors = () => {
   // ✅ Speciality list
   const specialities = [
     "General physician",
-    "Gynecologist",
+    "Obstetician and Gynecologist, Ear, Nose and Throat Specialist",
     "Dermatologist",
     "Pediatricians",
     "Neurologist",
