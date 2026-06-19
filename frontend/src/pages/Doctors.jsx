@@ -13,11 +13,13 @@ const Doctors = () => {
   // ✅ Speciality list
   const specialities = [
     "General physician",
-    "Obstetician and Gynecologist, Ear, Nose and Throat Specialist",
+    "Gynecologist",
     "Dermatologist",
     "Pediatricians",
     "Neurologist",
     "Gastroenterologist",
+    "Obstetrician and Gynecologist",
+    "Ear, Nose and Throat Specialist",
   ];
 
   // ✅ Apply filter when speciality changes

@@ -54,12 +54,14 @@ const Appointment = () => {
       endTime.setHours(17, 0, 0, 0);
 
       if (i === 0) {
-        currentDate.setHours(currentDate.getHours() > 8 ? currentDate.getHours() + 1 : 8);
-        currentDate.setMinutes(currentDate.getMinutes() > 30 ? 0 : 30);
-      } else {
-        currentDate.setHours(9);
-        currentDate.setMinutes(0);
-      }
+  currentDate.setHours(9, 0, 0, 0);
+
+  while (currentDate < today) {
+    currentDate.setMinutes(currentDate.getMinutes() + 30);
+  }
+} else {
+  currentDate.setHours(9, 0, 0, 0);
+}
       currentDate.setSeconds(0, 0);
 
       const slotDate = formatSlotDate(currentDate);

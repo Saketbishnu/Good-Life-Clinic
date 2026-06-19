@@ -69,7 +69,11 @@ const AddDoctor = () => {
           <input name="name" value={form.name} onChange={handleChange} placeholder="Doctor name" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
           <input name="email" value={form.email} onChange={handleChange} placeholder="Doctor email" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
           <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
-          <input name="speciality" value={form.speciality} onChange={handleChange} placeholder="Speciality" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
+          <input name="speciality" list="doctor-specialities" value={form.speciality} onChange={handleChange} placeholder="Speciality" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
+          <datalist id="doctor-specialities">
+            <option value="Obstetrician and Gynecologist" />
+            <option value="Ear, Nose and Throat Specialist" />
+          </datalist>
           <input name="degree" value={form.degree} onChange={handleChange} placeholder="Degree" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
           <input name="experience" value={form.experience} onChange={handleChange} placeholder="Experience" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
           <input name="fees" type="number" value={form.fees} onChange={handleChange} placeholder="Fees" className="border px-3 py-2 rounded text-gray-900 placeholder:text-gray-400 bg-white" required />
