@@ -1,6 +1,6 @@
 import validator from 'validator'
 import contactModel from '../models/contactModel.js'
-import createEmailTransporter from '../config/email.js'
+import createEmailTransporter, { verifyEmailTransporter } from '../config/email.js'
 
 const validateContactInput = ({ name, email, message }) => {
     if (!name || typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 80) {
@@ -29,35 +29,46 @@ const sendContactMessage = async (req, res) => {
             return res.status(400).json({ success: false, message: validationError })
         }
 
-        if (!process.env.CONTACT_RECEIVER_EMAIL || !validator.isEmail(process.env.CONTACT_RECEIVER_EMAIL)) {
-            return res.status(500).json({ success: false, message: 'Contact receiver email is not configured' })
-        }
-
         const contactMessage = await contactModel.create({ name, email, message })
         const submittedAt = new Date(contactMessage.date).toISOString()
-        const transporter = createEmailTransporter()
 
-        await transporter.sendMail({
-            from: `"Good Life Clinic Contact" <${process.env.EMAIL_USER}>`,
-            to: process.env.CONTACT_RECEIVER_EMAIL,
-            replyTo: email,
-            subject: `New contact message from ${name}`,
-            text: [
-                `Sender name: ${name}`,
-                `Sender email: ${email}`,
-                `Submitted at: ${submittedAt}`,
-                '',
-                'Message:',
-                message
-            ].join('\n')
-        })
+        try {
+            if (!process.env.CONTACT_RECEIVER_EMAIL || !validator.isEmail(process.env.CONTACT_RECEIVER_EMAIL)) {
+                throw new Error('Contact receiver email is not configured')
+            }
 
-        contactMessage.emailSent = true
-        await contactMessage.save()
+            const transporter = createEmailTransporter()
+            if (!await verifyEmailTransporter(transporter)) {
+                throw new Error('SMTP verification failed')
+            }
+
+            await transporter.sendMail({
+                from: `"Good Life Clinic Contact" <${process.env.EMAIL_USER}>`,
+                to: process.env.CONTACT_RECEIVER_EMAIL,
+                replyTo: email,
+                subject: `New contact message from ${name}`,
+                text: [
+                    `Sender name: ${name}`,
+                    `Sender email: ${email}`,
+                    `Submitted at: ${submittedAt}`,
+                    '',
+                    'Message:',
+                    message
+                ].join('\n')
+            })
+
+            contactMessage.emailSent = true
+            await contactMessage.save()
+            console.log(`Email sent for contact message ${contactMessage._id}`)
+        } catch (emailError) {
+            contactMessage.emailSent = false
+            await contactMessage.save()
+            console.error(`Email send failed for contact message ${contactMessage._id}:`, emailError.message)
+        }
 
         res.status(200).json({
             success: true,
-            message: 'Message sent successfully'
+            message: 'Your inquiry has been received'
         })
     } catch (error) {
         console.error('Error in sendContactMessage:', error.message)
