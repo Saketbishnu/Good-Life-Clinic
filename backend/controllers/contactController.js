@@ -1,6 +1,6 @@
 import validator from 'validator'
 import contactModel from '../models/contactModel.js'
-import createEmailTransporter, { verifyEmailTransporter } from '../config/email.js'
+import { sendEmail } from '../services/emailService.js'
 
 const validateContactInput = ({ name, email, message }) => {
     if (!name || typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 80) {
@@ -37,18 +37,10 @@ const sendContactMessage = async (req, res) => {
                 throw new Error('Contact receiver email is not configured')
             }
 
-            const transporter = createEmailTransporter()
             console.log('Attempting email send...')
-            const verified = await verifyEmailTransporter(transporter)
 
-            if (!verified) {
-                throw new Error("SMTP verification failed")
-            }
-
-            await transporter.sendMail({
-                from: `"Good Life Clinic Contact" <${process.env.EMAIL_USER}>`,
+            await sendEmail({
                 to: process.env.CONTACT_RECEIVER_EMAIL,
-                replyTo: email,
                 subject: `New contact message from ${name}`,
                 text: [
                     `Sender name: ${name}`,
@@ -62,11 +54,11 @@ const sendContactMessage = async (req, res) => {
 
             contactMessage.emailSent = true
             await contactMessage.save()
-            console.log('Email sent successfully')
+            console.log('Brevo email sent successfully')
         } catch (emailError) {
             contactMessage.emailSent = false
             await contactMessage.save()
-            console.error('Email send failed:', emailError.message)
+            console.error('Brevo email failed:', emailError.message)
         }
 
         res.status(200).json({
