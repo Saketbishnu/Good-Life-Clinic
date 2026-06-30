@@ -12,6 +12,8 @@ import Appointment from './pages/Appointment'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Doctors from './pages/Doctors'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
  // ✅ Make sure src/components/Navbar.jsx exists
 
 const App = () => {
@@ -21,6 +23,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/doctors" element={<Doctors/>} />
         <Route path="/doctors/:speciality" element={<Doctors />} />
         <Route path="/myappointment" element={<MyAppointment />} />

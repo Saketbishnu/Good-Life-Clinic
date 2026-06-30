@@ -82,6 +82,18 @@ export default function SignupLogin() {
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400"
           />
 
+          {isLogin && (
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={() => navigate("/forgot-password")}
+                className="text-sm text-indigo-600 font-semibold hover:underline"
+              >
+                Forgot Password?
+              </button>
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={isSubmitting}

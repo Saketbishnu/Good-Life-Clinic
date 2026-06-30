@@ -4,10 +4,13 @@ import validator from 'validator'
 import { v2 as cloudinary } from 'cloudinary'
 import userModel from '../models/userModel.js'
 import { DEFAULT_PROFILE_IMAGE } from '../constants/defaults.js'
+import { sendEmail } from '../services/emailService.js'
 
 const TOKEN_EXPIRY = '7d'
+const PASSWORD_RESET_EXPIRY = '15m'
 const allowedProfileImageTypes = new Set(['image/jpeg', 'image/png', 'image/webp'])
 const MAX_PROFILE_IMAGE_DATA_LENGTH = 7 * 1024 * 1024
+const PASSWORD_RESET_MESSAGE = 'If an account exists, a reset link has been sent.'
 
 const createToken = (userId) => {
     if (!process.env.JWT_SECRET) {
@@ -15,6 +18,18 @@ const createToken = (userId) => {
     }
 
     return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: TOKEN_EXPIRY })
+}
+
+const createPasswordResetToken = (userId) => {
+    if (!process.env.JWT_SECRET) {
+        throw new Error('JWT_SECRET is missing. Add it to your backend environment before starting the server.')
+    }
+
+    return jwt.sign(
+        { id: userId, purpose: 'password-reset' },
+        process.env.JWT_SECRET,
+        { expiresIn: PASSWORD_RESET_EXPIRY }
+    )
 }
 
 const sanitizeUser = (user) => ({
@@ -113,6 +128,13 @@ const uploadProfileImage = async (image) => {
 
     return image
 }
+
+const escapeHtml = (value) => String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
 
 const registerUser = async (req, res) => {
     try {
@@ -255,4 +277,100 @@ const updateUserProfile = async (req, res) => {
     }
 }
 
-export { registerUser, loginUser, getUserProfile, updateUserProfile }
+const forgotPassword = async (req, res) => {
+    try {
+        const email = req.body.email?.trim().toLowerCase()
+
+        if (!email || !validator.isEmail(email)) {
+            return res.status(200).json({ success: true, message: PASSWORD_RESET_MESSAGE })
+        }
+
+        const user = await userModel.findOne({ email })
+
+        if (user) {
+            try {
+                if (!process.env.FRONTEND_URL) {
+                    throw new Error('FRONTEND_URL is not configured')
+                }
+
+                const token = createPasswordResetToken(user._id)
+                const resetUrl = `${process.env.FRONTEND_URL.replace(/\/$/, '')}/reset-password/${token}`
+                const escapedName = escapeHtml(user.name || 'there')
+                const escapedResetUrl = escapeHtml(resetUrl)
+
+                await sendEmail({
+                    to: email,
+                    subject: 'Reset your Good Life Clinic password',
+                    text: [
+                        `Hello ${user.name || 'there'},`,
+                        '',
+                        'We received a request to reset your Good Life Clinic password.',
+                        `Reset your password using this link: ${resetUrl}`,
+                        '',
+                        'This link expires in 15 minutes.',
+                        'If you did not request this, you can ignore this email.'
+                    ].join('\n'),
+                    html: [
+                        `<p>Hello ${escapedName},</p>`,
+                        '<p>We received a request to reset your Good Life Clinic password.</p>',
+                        `<p><a href="${escapedResetUrl}">Reset your password</a></p>`,
+                        '<p>This link expires in 15 minutes.</p>',
+                        '<p>If you did not request this, you can ignore this email.</p>'
+                    ].join('')
+                })
+            } catch (emailError) {
+                console.error('Password reset email failed:', emailError.message)
+            }
+        }
+
+        res.status(200).json({ success: true, message: PASSWORD_RESET_MESSAGE })
+    } catch (error) {
+        console.error('Error in forgotPassword:', error.message)
+        res.status(200).json({ success: true, message: PASSWORD_RESET_MESSAGE })
+    }
+}
+
+const resetPassword = async (req, res) => {
+    try {
+        const { token, password } = req.body
+
+        if (!token || typeof token !== 'string') {
+            return res.status(400).json({ success: false, message: 'Invalid or expired reset link' })
+        }
+
+        if (!password || typeof password !== 'string' || password.length < 8) {
+            return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long' })
+        }
+
+        let decoded
+        try {
+            decoded = jwt.verify(token, process.env.JWT_SECRET)
+        } catch {
+            return res.status(400).json({ success: false, message: 'Invalid or expired reset link' })
+        }
+
+        if (decoded.purpose !== 'password-reset' || !decoded.id) {
+            return res.status(400).json({ success: false, message: 'Invalid or expired reset link' })
+        }
+
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt)
+
+        const user = await userModel.findByIdAndUpdate(
+            decoded.id,
+            { $set: { password: hashedPassword } },
+            { new: true }
+        )
+
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Invalid or expired reset link' })
+        }
+
+        res.status(200).json({ success: true, message: 'Password reset successful' })
+    } catch (error) {
+        console.error('Error in resetPassword:', error.message)
+        res.status(500).json({ success: false, message: 'Failed to reset password' })
+    }
+}
+
+export { registerUser, loginUser, getUserProfile, updateUserProfile, forgotPassword, resetPassword }
