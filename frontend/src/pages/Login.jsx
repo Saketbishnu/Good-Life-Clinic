@@ -9,6 +9,7 @@ export default function SignupLogin() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     password: "",
   });
   const [message, setMessage] = useState("");
@@ -28,7 +29,7 @@ export default function SignupLogin() {
     try {
       const endpoint = isLogin ? "/api/user/login" : "/api/user/register";
       const payload = isLogin
-        ? { email: formData.email, password: formData.password }
+        ? { identifier: formData.email, password: formData.password }
         : formData;
 
       const { data } = await api.post(endpoint, payload);
@@ -66,13 +67,24 @@ export default function SignupLogin() {
             />
           )}
           <input
-            type="email"
+            type={isLogin ? "text" : "email"}
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="Email"
+            placeholder={isLogin ? "Email or Mobile Number" : "Email"}
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400"
           />
+          {!isLogin && (
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="Phone Number"
+              maxLength="10"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400"
+            />
+          )}
           <input
             type="password"
             name="password"
@@ -122,3 +134,4 @@ export default function SignupLogin() {
     </div>
   );
 }
+

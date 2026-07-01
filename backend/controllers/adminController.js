@@ -195,14 +195,37 @@ const deleteDoctor = async (req, res) => {
 const appointmentsAdmin = async (req, res) => {
     try {
         const appointments = await appointmentModel.find({}).sort({ date: -1 })
+        const userIds = [...new Set(appointments.map((appointment) => String(appointment.userId)))]
+        const users = await userModel
+            .find({ _id: { $in: userIds } })
+            .select('name email phone')
 
-        res.status(200).json({ success: true, appointments })
+        const usersById = new Map(users.map((user) => [String(user._id), user]))
+        const appointmentsWithLatestUserPhone = appointments.map((appointment) => {
+            const appointmentObject = appointment.toObject()
+            const latestUser = usersById.get(String(appointment.userId))
+
+            if (!latestUser) {
+                return appointmentObject
+            }
+
+            return {
+                ...appointmentObject,
+                userData: {
+                    ...appointmentObject.userData,
+                    name: latestUser.name,
+                    email: latestUser.email,
+                    phone: latestUser.phone
+                }
+            }
+        })
+
+        res.status(200).json({ success: true, appointments: appointmentsWithLatestUserPhone })
     } catch (error) {
         console.error("Error in appointmentsAdmin:", error.message)
         res.status(500).json({ success: false, message: "Failed to fetch appointments" })
     }
 }
-
 const adminDashboard = async (req, res) => {
     try {
         const [doctors, users, appointments, cancelledAppointments, completedAppointments] = await Promise.all([
@@ -233,3 +256,4 @@ const adminDashboard = async (req, res) => {
 }
 
 export { addDoctor, loginAdmin, allDoctors, changeDoctorAvailability, deleteDoctor, appointmentsAdmin, adminDashboard };
+

@@ -145,12 +145,13 @@ const Myprofile = () => {
         <h3>Contact Information</h3>
         <p><strong>Email:</strong> {userData.email}</p>
 
-        <p><strong>Phone:</strong></p>
+        <p><strong>Phone Number:</strong></p>
         {isEdit ? (
           <input
-            type="text"
+            type="tel"
             value={userData.phone}
             onChange={(e) => setUserData(prev => ({ ...prev, phone: e.target.value }))}
+            maxLength="10"
             style={inputStyle}
           />
         ) : (
@@ -238,3 +239,4 @@ const Myprofile = () => {
 }
 
 export default Myprofile
+

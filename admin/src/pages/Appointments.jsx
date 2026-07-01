@@ -25,6 +25,7 @@ const Appointments = () => {
             <div>
               <p className="font-medium">{item.userData?.name}</p>
               <p>{item.userData?.email}</p>
+              <p>{item.userData?.phone}</p>
             </div>
             <p>{item.slotDate} | {item.slotTime}</p>
             <p>{item.cancelled ? 'Cancelled' : item.isCompleted ? 'Completed' : 'Active'}</p>
@@ -37,3 +38,4 @@ const Appointments = () => {
 }
 
 export default Appointments
+

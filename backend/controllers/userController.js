@@ -11,6 +11,8 @@ const PASSWORD_RESET_EXPIRY = '15m'
 const allowedProfileImageTypes = new Set(['image/jpeg', 'image/png', 'image/webp'])
 const MAX_PROFILE_IMAGE_DATA_LENGTH = 7 * 1024 * 1024
 const PASSWORD_RESET_MESSAGE = 'If an account exists, a reset link has been sent.'
+const normalizePhone = (phone) => String(phone || '').replace(/\D/g, '')
+const isValidIndianMobile = (phone) => /^[6-9]\d{9}$/.test(phone)
 
 const createToken = (userId) => {
     if (!process.env.JWT_SECRET) {
@@ -53,13 +55,17 @@ const isProfileImageDataUrl = (image) => {
     return Boolean(match && allowedProfileImageTypes.has(match[1]))
 }
 
-const validateAuthInput = ({ name, email, password }, requireName = false) => {
+const validateAuthInput = ({ name, email, phone, password }, requireName = false, requirePhone = false) => {
     if (requireName && (!name || !name.trim())) {
         return 'Name is required'
     }
 
     if (!email || !validator.isEmail(email)) {
         return 'Please enter a valid email'
+    }
+
+    if (requirePhone && !isValidIndianMobile(phone)) {
+        return 'Phone number must be a valid 10 digit Indian mobile number'
     }
 
     if (!password || password.length < 8) {
@@ -74,8 +80,8 @@ const validateProfileInput = ({ name, phone, address, gender, dob, image }) => {
         return 'Name must be between 1 and 80 characters'
     }
 
-    if (phone !== undefined && (typeof phone !== 'string' || !/^[0-9+\-\s()]{7,20}$/.test(phone))) {
-        return 'Please enter a valid phone number'
+    if (phone !== undefined && phone !== '' && !isValidIndianMobile(normalizePhone(phone))) {
+        return 'Phone number must be a valid 10 digit Indian mobile number'
     }
 
     if (address !== undefined) {
@@ -140,9 +146,10 @@ const registerUser = async (req, res) => {
     try {
         const name = req.body.name?.trim()
         const email = req.body.email?.trim().toLowerCase()
+        const phone = normalizePhone(req.body.phone)
         const password = req.body.password
 
-        const validationError = validateAuthInput({ name, email, password }, true)
+        const validationError = validateAuthInput({ name, email, phone, password }, true, true)
         if (validationError) {
             return res.status(400).json({ success: false, message: validationError })
         }
@@ -152,12 +159,18 @@ const registerUser = async (req, res) => {
             return res.status(409).json({ success: false, message: 'Email already registered' })
         }
 
+        const existingPhone = await userModel.findOne({ phone })
+        if (existingPhone) {
+            return res.status(409).json({ success: false, message: 'Phone number already registered' })
+        }
+
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
 
         const newUser = new userModel({
             name,
             email,
+            phone,
             password: hashedPassword,
             image: DEFAULT_PROFILE_IMAGE
         })
@@ -173,25 +186,43 @@ const registerUser = async (req, res) => {
         })
     } catch (error) {
         if (error.code === 11000) {
-            return res.status(409).json({ success: false, message: 'Email already registered' })
+            const duplicateField = Object.keys(error.keyPattern || {})[0]
+            return res.status(409).json({
+                success: false,
+                message: duplicateField === 'phone' ? 'Phone number already registered' : 'Email already registered'
+            })
         }
 
         console.error('Error in registerUser:', error.message)
         res.status(500).json({ success: false, message: 'Registration failed' })
     }
 }
-
 const loginUser = async (req, res) => {
     try {
-        const email = req.body.email?.trim().toLowerCase()
+        const identifier = (req.body.identifier ?? req.body.email)?.trim()
         const password = req.body.password
 
-        const validationError = validateAuthInput({ email, password })
-        if (validationError) {
-            return res.status(400).json({ success: false, message: validationError })
+        if (!identifier) {
+            return res.status(400).json({ success: false, message: 'Email or mobile number is required' })
         }
 
-        const user = await userModel.findOne({ email }).select('+password')
+        if (!password || password.length < 8) {
+            return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long' })
+        }
+
+        const query = identifier.includes('@')
+            ? { email: identifier.toLowerCase() }
+            : { phone: normalizePhone(identifier) }
+
+        if (query.email && !validator.isEmail(query.email)) {
+            return res.status(400).json({ success: false, message: 'Please enter a valid email' })
+        }
+
+        if (query.phone && !isValidIndianMobile(query.phone)) {
+            return res.status(400).json({ success: false, message: 'Please enter a valid mobile number' })
+        }
+
+        const user = await userModel.findOne(query).select('+password')
         if (!user) {
             return res.status(401).json({ success: false, message: 'Invalid credentials' })
         }
@@ -245,7 +276,18 @@ const updateUserProfile = async (req, res) => {
         const updates = {}
 
         if (name !== undefined) updates.name = name.trim()
-        if (phone !== undefined) updates.phone = phone.trim()
+        if (phone !== undefined) {
+            const normalizedPhone = normalizePhone(phone)
+            const duplicatePhone = normalizedPhone
+                ? await userModel.findOne({ phone: normalizedPhone, _id: { $ne: req.userId } })
+                : null
+
+            if (duplicatePhone) {
+                return res.status(409).json({ success: false, message: 'Phone number already registered' })
+            }
+
+            updates.phone = normalizedPhone
+        }
         if (address !== undefined) {
             updates.address = {
                 line1: address.line1?.trim() || '',
@@ -272,11 +314,14 @@ const updateUserProfile = async (req, res) => {
             user: sanitizeUser(user)
         })
     } catch (error) {
+        if (error.code === 11000) {
+            return res.status(409).json({ success: false, message: 'Phone number already registered' })
+        }
+
         console.error('Error in updateUserProfile:', error.message)
         res.status(500).json({ success: false, message: 'Failed to update profile' })
     }
 }
-
 const forgotPassword = async (req, res) => {
     try {
         const email = req.body.email?.trim().toLowerCase()
@@ -374,3 +419,4 @@ const resetPassword = async (req, res) => {
 }
 
 export { registerUser, loginUser, getUserProfile, updateUserProfile, forgotPassword, resetPassword }
+
