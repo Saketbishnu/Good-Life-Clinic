@@ -5,6 +5,7 @@ import { AppContext } from "../context/AppContext";
 export default function SignupLogin() {
   const navigate = useNavigate();
   const { api, setToken } = useContext(AppContext);
+  const adminLoginUrl = `${import.meta.env.VITE_ADMIN_URL}/login`;
   const [isLogin, setIsLogin] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -130,6 +131,16 @@ export default function SignupLogin() {
             {isLogin ? "Signup" : "Login"}
           </button>
         </p>
+
+        <button
+          type="button"
+          onClick={() => {
+            window.location.href = adminLoginUrl;
+          }}
+          className="mt-3 w-full border border-indigo-600 text-indigo-600 py-2 rounded-lg font-semibold hover:bg-indigo-50 transition"
+        >
+          Admin Login
+        </button>
       </div>
     </div>
   );
